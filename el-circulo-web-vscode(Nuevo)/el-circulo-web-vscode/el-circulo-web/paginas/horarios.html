@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Horarios | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html" data-link>
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="inicio.html" data-link>Inicio</a>
+        <a href="servicios.html" data-link>Servicios</a>
+        <a href="horarios.html" data-link class="active">Horarios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section horarios-section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Agenda gamer</p>
+          <h2>Horarios y eventos</h2>
+          <p>
+            Consulta nuestros horarios de atención y revisa los eventos destacados
+            de El Círculo Gaming House.
+          </p>
+        </div>
+
+        <div class="horarios-eventos-grid">
+          <article class="schedule-card neon-card">
+            <h3>Horario de atención</h3>
+            <div class="schedule-list"></div>
+          </article>
+
+          <article class="events-card neon-card">
+            <h3>Próximos eventos</h3>
+            <div class="event-list"></div>
+          </article>
+        </div>
+
+        <section class="calendar-card neon-card">
+          <div class="calendar-header">
+            <div>
+              <p class="eyebrow">Calendario</p>
+              <h3 id="calendarTitle">Calendario</h3>
+            </div>
+
+            <div class="calendar-controls">
+              <button type="button" id="prevMonth" class="calendar-nav-btn">‹</button>
+              <button type="button" id="goToday" class="calendar-today-btn">Hoy</button>
+              <button type="button" id="nextMonth" class="calendar-nav-btn">›</button>
+            </div>
+
+            <span class="calendar-legend">
+              <span></span>
+              Día con evento
+            </span>
+          </div>
+
+          <div class="calendar-grid"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+    <div class="container footer-content footer-with-links">
+      <p>© 2026 El Círculo Gaming House</p>
+
+      <nav class="footer-links">
+        <a href="nosotros.html" data-link>Nosotros</a>
+        <a href="galeria.html" data-link>Galería</a>
+        <a href="contactanos.html" data-link>Contacto</a>
+      </nav>
+
+    </div>
+  </footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <a 
+    class="btn-reservar"
+    href="https://wa.me/505XXXXXXXX?text=Hola,%20quiero%20hacer%20una%20reserva%20para%20el%20servicio%20de%20consolas."
+    target="_blank">
+    Reservar por WhatsApp
+  </a>
+<script src="../script/auth.js"></script>
+  <script src="../script/site-data.js"></script>
+  <script src="../script.js"></script>
+  <script src="../script/horarios.js"></script>
+  <script src="../script/sprite-catalog.js"></script>
+  <script src="../script/easter-sprites.js"></script>
+</body>
+</html>

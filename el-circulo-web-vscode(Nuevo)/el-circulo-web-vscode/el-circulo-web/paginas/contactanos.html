@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Contacto | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html" data-link>
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+<nav class="nav-links" id="navLinks">
+  <a href="inicio.html" data-link>Inicio</a>
+  <a href="servicios.html" data-link>Servicios</a>
+  <a href="horarios.html" data-link>Horarios</a>
+</nav>  
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="contacto">
+      <div class="container contact-grid">
+        <div>
+          <div class="section-title align-left">
+            <p class="eyebrow">Hablemos</p>
+            <h2>Contacto</h2>
+            <p>
+              Puedes escribirnos o visitarnos. Aquí encontrarás nuestras redes,
+              teléfono, dirección, horario y un mapa de ubicación.
+            </p>
+          </div>
+
+          <div class="contact-cards">
+            <article class="contact-card">
+              <h3>Facebook</h3>
+              <p>
+                <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank">
+                  El Círculo Gaming House
+                </a>
+              </p>
+            </article>
+
+            <article class="contact-card">
+              <h3>Instagram</h3>
+              <p>
+                <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank">
+                  @elcirculogaminghouse
+                </a>
+              </p>
+            </article>
+
+            <article class="contact-card">
+              <h3>Teléfono</h3>
+              <p><a href="tel:+505">8942 8230</a></p>
+            </article>
+
+            <article class="contact-card">
+              <h3>Dirección</h3>
+              <p>Edificios de la UNI, Av. Universitaria Casimiro Sotelo, Managua 11125</p>
+            </article>
+          </div>
+
+
+
+          <div class="map-card neon-card">
+            <h3>Ubicación</h3>
+
+            <iframe
+              src="https://www.google.com/maps?q=Edificios%20de%20la%20UNI,%20Av.%20Universitaria%20Casimiro%20Sotelo,%20Managua%2011125&z=16&output=embed"
+              width="100%"
+              height="300"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+
+        <form class="contact-form neon-card" id="contactForm">
+          <label>
+            Nombre completo
+            <input type="text" name="name" id="name" placeholder="Tu nombre" required>
+          </label>
+
+          <label>
+            Correo electrónico
+            <input type="email" name="email" id="email" placeholder="correo@ejemplo.com" required>
+          </label>
+
+          <label>
+            Teléfono
+            <input type="tel" name="phone" id="phone" placeholder="8942 8230">
+          </label>
+
+          <label>
+            Mensaje
+            <textarea name="message" id="message" rows="5" placeholder="Escribe tu mensaje" required></textarea>
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+ 
+          </div>
+
+          <p class="form-status" id="formStatus"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+<footer class="site-footer">
+   <div id="spriteFloor" aria-hidden="true"></div>
+  <div class="container footer-content footer-with-links">
+    <p>© 2026 El Círculo Gaming House</p>
+
+    <nav class="footer-links">
+      <a href="nosotros.html" data-link>Nosotros</a>
+      <a href="galeria.html" data-link>Galería</a>
+      <a href="contactanos.html" data-link>Contacto</a>
+    </nav>
+
+   
+  </div>
+</footer>
+<script src="../script/site-data.js"></script>
+<script src="../script.js"></script>
+<script src="../script/auth.js"></script>
+<script src="../script/contactanos.js"></script>
+<script src="../script/sprite-catalog.js"></script>
+<script src="../script/easter-sprites.js"></script>
+</body>
+</html>

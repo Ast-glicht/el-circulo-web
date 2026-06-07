@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Servicios | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html" data-link>
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+<nav class="nav-links" id="navLinks">
+  <a href="inicio.html" data-link>Inicio</a>
+  <a href="servicios.html" data-link>Servicios</a>
+  <a href="horarios.html" data-link>Horarios</a>
+</nav>
+    </div>
+  </header>
+
+  <main>
+<section class="section services-page-layout" id="servicios">
+
+  <aside class="side-random-gallery side-left">
+    <div class="side-image-box">
+      <img src="../img/slide1.png" alt="Imagen gamer izquierda" id="leftRandomImage">
+      <div class="side-scan-effect"></div>
+    </div>
+  </aside>
+
+  <div class="container services-main-content">
+        <div class="section-title">
+          <p class="eyebrow">Lo que ofrecemos</p>
+          <h2>Nuestros servicios</h2>
+          <p>Haz clic en cualquier tarjeta para ver más información.</p>
+        </div>
+
+        <div class="service-grid" id="serviceGrid"></div>
+
+        <div class="cta-box">
+          <h3>¿Necesitas algo personalizado?</h3>
+          <p>Podemos orientarte sobre mantenimiento, liberación o la mejor estación de juego.</p>
+          <a href="contactanos.html" data-link class="btn btn-dark">Solicitar información</a>
+        </div>
+  </div>
+
+  <aside class="side-random-gallery side-right">
+    <div class="side-image-box">
+      <img src="../img/slide6.png" alt="Imagen gamer derecha" id="rightRandomImage">
+      <div class="side-scan-effect"></div>
+    </div>
+  </aside>
+
+</section>
+  </main>
+
+<footer class="site-footer">
+   <div id="spriteFloor" aria-hidden="true"></div>
+  <div class="container footer-content footer-with-links">
+    <p>© 2026 El Círculo Gaming House</p>
+
+    <nav class="footer-links">
+      <a href="nosotros.html" data-link>Nosotros</a>
+      <a href="galeria.html" data-link>Galería</a>
+      <a href="contactanos.html" data-link>Contacto</a>
+    </nav>
+
+
+  </div>
+</footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+<script src="../script.js"></script>
+<script src="../script/site-data.js"></script>
+<script src="../script/servicios.js"></script>
+<script src="../script/sprite-catalog.js"></script>
+<script src="../script/easter-sprites.js"></script>
+</body>
+</html>

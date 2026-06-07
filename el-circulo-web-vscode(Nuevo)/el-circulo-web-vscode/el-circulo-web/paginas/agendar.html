@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Agendar | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html" data-link>
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="inicio.html" data-link>Inicio</a>
+        <a href="servicios.html" data-link>Servicios</a>
+        <a href="horarios.html" data-link>Horarios</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Reserva tu servicio</p>
+          <h2 id="agendaTitle">Agendar servicio</h2>
+          <p id="agendaSubtitle">
+            Completa los datos necesarios para preparar tu solicitud.
+          </p>
+        </div>
+
+        <form class="agenda-form neon-card" id="agendaForm">
+          <section class="agenda-block">
+            <h3>Datos del cliente</h3>
+
+            <div class="agenda-grid">
+              <label>
+                Nombre y apellidos
+                <input type="text" id="clientName" name="clientName" placeholder="Ej: Juan Pérez" required>
+              </label>
+
+              <label>
+                Teléfono
+                <input type="tel" id="clientPhone" name="clientPhone" placeholder="Ej: 8942 8230" required>
+              </label>
+
+              <label>
+                Gmail
+                <input type="email" id="clientEmail" name="clientEmail" placeholder="ejemplo@gmail.com" required>
+              </label>
+            </div>
+          </section>
+
+          <section class="agenda-block" id="dynamicFields"></section>
+
+          <section class="agenda-summary neon-card" id="agendaSummary">
+            <h3>Resumen</h3>
+            <p id="summaryText">Selecciona los datos del servicio para ver el resumen.</p>
+          </section>
+
+          <div class="agenda-actions">
+            <button type="submit" class="btn btn-primary">Confirmar agenda</button>
+            <a href="servicios.html" data-link class="btn btn-secondary">Volver a servicios</a>
+          </div>
+
+          <p class="form-status" id="agendaStatus"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+
+    <div class="container footer-content footer-with-links">
+      <p>© 2026 El Círculo Gaming House</p>
+
+      <nav class="footer-links">
+        <a href="nosotros.html" data-link>Nosotros</a>
+        <a href="galeria.html" data-link>Galería</a>
+        <a href="contactanos.html" data-link>Contacto</a>
+      </nav>
+
+   
+    </div>
+  </footer>
+<script src="../script/site-data.js"></script>
+<script src="../script/panel.js"></script>
+  <script src="../script.js"></script>
+  <script src="../script/agendar.js"></script>
+  <script src="../script/sprite-catalog.js"></script>
+  <script src="../script/easter-sprites.js"></script>
+  <script src="../script/auth.js"></script>
+</body>
+</html>

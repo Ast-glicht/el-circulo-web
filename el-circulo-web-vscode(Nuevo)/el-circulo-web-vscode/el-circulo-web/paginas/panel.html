@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Panel Admin | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style/styles.css" />
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html">
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Panel Admin</small>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="inicio.html">Inicio</a>
+        <a href="servicios.html">Servicios</a>
+        <a href="horarios.html">Horarios</a>
+        <button class="nav-admin-logout" id="cerrarSesionAdmin">Cerrar sesión</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-panel-page">
+    <section class="container admin-panel-layout">
+
+      <div class="admin-panel-hero">
+        <span class="admin-panel-chip">CONTROL INTERNO</span>
+        <h1>Centro de Control</h1>
+        <p>
+          Desde este panel puedes modificar eventos, horarios, servicios, contacto
+          y contenido visible en el sistema frontend.
+        </p>
+      </div>
+
+      <div class="admin-dashboard-grid">
+        <article class="admin-dashboard-card active" data-admin-section="eventos">
+          <span>01</span>
+          <h3>Eventos</h3>
+          <p>Crear, editar y eliminar eventos especiales.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="horarios">
+          <span>02</span>
+          <h3>Horarios</h3>
+          <p>Actualizar horarios de atención.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="promos">
+          <span>03</span>
+          <h3>Promociones</h3>
+          <p>Activar anuncios o promociones temporales.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="servicios">
+          <span>04</span>
+          <h3>Servicios</h3>
+          <p>Editar consolas, precios, juegos y equipos.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="contacto">
+          <span>05</span>
+          <h3>Contacto</h3>
+          <p>Actualizar redes, teléfono, dirección y mapa.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="respaldo">
+          <span>06</span>
+          <h3>Respaldo</h3>
+          <p>Exportar, restaurar o limpiar datos locales.</p>
+        </article>
+      </div>
+
+      <section class="admin-workspace">
+
+        <!-- SECCIÓN EVENTOS -->
+        <div class="admin-section active" id="section-eventos">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de eventos</h2>
+              <p>Agrega torneos, noches gamer o actividades especiales.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formEvento">
+            <input type="hidden" id="eventoId">
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="eventoTitulo">Título del evento</label>
+                <input type="text" id="eventoTitulo" placeholder="Torneo de Smash Bros">
+              </div>
+
+              <div class="form-group">
+                <label for="eventoFecha">Fecha</label>
+                <input type="date" id="eventoFecha">
+              </div>
+
+              <div class="form-group">
+                <label for="eventoHora">Hora</label>
+                <input type="time" id="eventoHora">
+              </div>
+
+              <div class="form-group">
+                <label for="eventoEstado">Estado</label>
+                <select id="eventoEstado">
+                  <option value="Activo">Activo</option>
+                  <option value="Próximamente">Próximamente</option>
+                  <option value="Finalizado">Finalizado</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="eventoDescripcion">Descripción</label>
+              <textarea id="eventoDescripcion" placeholder="Describe el evento para los visitantes..."></textarea>
+            </div>
+
+          <div class="form-group">
+  <label>Imagen del evento</label>
+
+  <div class="admin-file-upload">
+    <input type="file" id="eventoImagen" accept="image/*">
+    <label for="eventoImagen" class="admin-file-label">
+      Seleccionar imagen
+    </label>
+    <span id="eventoImagenNombre">Sin imagen seleccionada</span>
+  </div>
+
+  <div class="admin-image-preview" id="eventoImagenPreviewBox">
+    <img id="eventoImagenPreview" alt="Previsualización del evento">
+  </div>
+</div>
+
+              <div class="form-group">
+                <label for="eventoVideo">Video relacionado</label>
+                <input type="url" id="eventoVideo" placeholder="https://youtube.com/...">
+              </div>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar evento</button>
+              <button type="button" class="admin-secondary-btn" id="limpiarEvento">Limpiar</button>
+            </div>
+          </form>
+
+          <div class="admin-list" id="listaEventos"></div>
+        </div>
+
+        <!-- SECCIÓN HORARIOS -->
+        <div class="admin-section" id="section-horarios">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de horarios</h2>
+              <p>Modifica la información de atención del local.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formHorario"></form>
+        </div>
+
+        <!-- SECCIÓN PROMOS -->
+        <div class="admin-section" id="section-promos">
+          <div class="admin-section-header">
+            <div>
+              <h2>Promoción destacada</h2>
+              <p>Define un mensaje promocional para usar en la página.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formPromo">
+            <div class="form-group">
+              <label for="promoTexto">Mensaje promocional</label>
+              <textarea id="promoTexto" placeholder="Ejemplo: Viernes de torneo con descuento en horas de juego."></textarea>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar promoción</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SECCIÓN SERVICIOS -->
+        <div class="admin-section" id="section-servicios">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de servicios</h2>
+              <p>Edita los servicios visibles en la página y en la agenda.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formServicio">
+            <input type="hidden" id="servicioId">
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="servicioSelect">Servicio</label>
+                <select id="servicioSelect"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="servicioTitulo">Título</label>
+                <input type="text" id="servicioTitulo">
+              </div>
+
+              <div class="form-group">
+                <label for="servicioTag">Etiqueta</label>
+                <input type="text" id="servicioTag">
+              </div>
+
+              <div class="form-group">
+                <label for="servicioPrecioTexto">Precio visible</label>
+                <input type="text" id="servicioPrecioTexto">
+              </div>
+
+              <div class="form-group">
+                <label for="servicioPrecioNumero">Precio numérico para agenda</label>
+                <input type="number" id="servicioPrecioNumero" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="servicioImagen">Imagen del servicio</label>
+                <input type="file" id="servicioImagen" accept="image/*">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioShort">Descripción corta</label>
+              <textarea id="servicioShort"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioDescripcion">Descripción completa</label>
+              <textarea id="servicioDescripcion"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioJuegos">Juegos / equipos aptos, uno por línea</label>
+              <textarea id="servicioJuegos"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioEquipos">Equipos disponibles, uno por línea</label>
+              <textarea id="servicioEquipos"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="servicioReglas">Reglas, una por línea</label>
+              <textarea id="servicioReglas"></textarea>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar servicio</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SECCIÓN CONTACTO -->
+        <div class="admin-section" id="section-contacto">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de contacto</h2>
+              <p>Edita redes, teléfono, dirección y mapa.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formContacto">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="facebookTexto">Texto Facebook</label>
+                <input type="text" id="facebookTexto">
+              </div>
+
+              <div class="form-group">
+                <label for="facebookUrl">URL Facebook</label>
+                <input type="url" id="facebookUrl">
+              </div>
+
+              <div class="form-group">
+                <label for="instagramTexto">Texto Instagram</label>
+                <input type="text" id="instagramTexto">
+              </div>
+
+              <div class="form-group">
+                <label for="instagramUrl">URL Instagram</label>
+                <input type="url" id="instagramUrl">
+              </div>
+
+              <div class="form-group">
+                <label for="telefonoTexto">Teléfono visible</label>
+                <input type="text" id="telefonoTexto">
+              </div>
+
+              <div class="form-group">
+                <label for="telefonoUrl">Teléfono para enlace</label>
+                <input type="text" id="telefonoUrl" placeholder="+50589428230">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="direccionContacto">Dirección</label>
+              <textarea id="direccionContacto"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="mapaUrl">URL embed de Google Maps</label>
+              <textarea id="mapaUrl"></textarea>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar contacto</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SECCIÓN RESPALDO -->
+        <div class="admin-section" id="section-respaldo">
+          <div class="admin-section-header">
+            <div>
+              <h2>Respaldo local</h2>
+              <p>Administra los datos guardados en este navegador.</p>
+            </div>
+          </div>
+
+          <div class="admin-backup-box">
+            <button class="admin-main-btn" id="exportarDatos">Exportar datos</button>
+            <button class="admin-danger-btn" id="restaurarDatos">Restaurar datos</button>
+          </div>
+        </div>
+
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div id="spriteFloor" aria-hidden="true"></div>
+  </footer>
+
+  <script src="../script/site-data.js"></script>
+  <script src="../script/admin-guard.js"></script>
+  <script src="../script/panel.js"></script>
+  <script src="../script/sprite-catalog.js"></script>
+  <script src="../script/easter-sprites.js"></script>
+</body>
+</html>
