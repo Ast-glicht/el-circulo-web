@@ -167,3 +167,20 @@ function startRandomImageLoop(imageElement) {
 
 startRandomImageLoop(leftRandomImage);
 startRandomImageLoop(rightRandomImage);
+
+function abrirServicioDesdeURL() {
+  const params = new URLSearchParams(window.location.search);
+  const servicioId = params.get("servicio");
+
+  if (!servicioId) return;
+
+  const servicio = services.find((item) => item.id === servicioId);
+
+  if (!servicio) return;
+
+  setTimeout(() => {
+    openServicePanel(servicio);
+  }, 300);
+}
+
+abrirServicioDesdeURL();

@@ -3097,3 +3097,68 @@ body.modo-misterio::after {
     0 0 32px rgba(255, 255, 255, 0.25),
     0 0 42px rgba(51, 217, 255, 0.35) !important;
 }
+
+.home-service-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.home-service-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.12), rgba(120, 0, 255, 0.16));
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.12);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.home-service-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(0, 255, 255, 0.28), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.home-service-btn strong,
+.home-service-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.home-service-btn strong {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.home-service-btn span {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.home-service-btn:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 32px rgba(0, 255, 255, 0.3);
+}
+
+.home-service-btn:hover::before {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .home-service-buttons {
+    grid-template-columns: 1fr;
+  }
+}
