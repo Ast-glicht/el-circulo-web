@@ -1,6 +1,6 @@
 const ADMIN_PASSWORD = "123456789";
 const ADMIN_ROLE = "ADMIN";
-
+verificarExpiracionAdmin();
 const konamiCode = [
   "ArrowUp",
   "ArrowUp",
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   crearModalAdmin();
   activarOpcionesAdmin();
   prepararEventosLogin();
+  activarAccesoMovilAdmin();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -36,6 +37,31 @@ document.addEventListener("keydown", (event) => {
     konamiPosition = 0;
   }
 });
+
+function activarAccesoMovilAdmin() {
+  const elemento = document.querySelector(".brand-logo") || document.querySelector(".brand");
+
+  if (!elemento) return;
+
+  let taps = 0;
+  let timer = null;
+
+  elemento.addEventListener("click", (event) => {
+    taps++;
+
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      taps = 0;
+    }, 2000);
+
+    if (taps >= 7) {
+      event.preventDefault();
+      taps = 0;
+      mostrarLoginAdmin();
+    }
+  });
+}
 
 function crearModalAdmin() {
   if (document.getElementById("adminLoginModal")) return;
@@ -125,8 +151,8 @@ function loginAdmin() {
   const mensaje = document.getElementById("adminLoginMensaje");
 
   if (rol === ADMIN_ROLE && password === ADMIN_PASSWORD) {
-    localStorage.setItem("rolActivo", "ADMIN");
-
+localStorage.setItem("rolActivo", "ADMIN");
+localStorage.setItem("adminLoginTime", Date.now());
     mensaje.textContent = "Acceso concedido. Bienvenido.";
     mensaje.className = "success";
 
@@ -154,7 +180,7 @@ function activarOpcionesAdmin() {
 
   if (rolActivo !== "ADMIN") return;
 
-  document.querySelectorAll(".admin-only").forEach(elemento => {
+  document.querySelectorAll(".admin-only").forEach((elemento) => {
     elemento.style.display = "inline-flex";
   });
 
@@ -167,4 +193,13 @@ function activarOpcionesAdmin() {
   botonAdmin.href = obtenerRutaPanel();
 
   document.body.appendChild(botonAdmin);
+}
+
+function verificarExpiracionAdmin() {
+  const loginTime = Number(localStorage.getItem("adminLoginTime"));
+
+  if (loginTime && Date.now() - loginTime > 4 * 60 * 60 * 1000) {
+    localStorage.removeItem("rolActivo");
+    localStorage.removeItem("adminLoginTime");
+  }
 }

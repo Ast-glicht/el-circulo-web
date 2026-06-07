@@ -230,36 +230,67 @@ const defaultSiteData = {
     mapaUrl: "https://www.google.com/maps?q=Edificios%20de%20la%20UNI,%20Av.%20Universitaria%20Casimiro%20Sotelo,%20Managua%2011125&z=16&output=embed",
   },
 };
-function getPromo() {
-  return getSiteData().promo || "";
+function clonarDatos(datos) {
+  return JSON.parse(JSON.stringify(datos));
 }
 
-async function guardarPromo(promo) {
-  const data = getSiteData();
-  data.promo = promo;
-  await saveSiteData(data);
+function combinarDatos(base, nuevos) {
+  return {
+    ...clonarDatos(base),
+    ...nuevos,
+    horarios: {
+      ...clonarDatos(base.horarios),
+      ...(nuevos?.horarios || {}),
+    },
+    servicios: nuevos?.servicios || clonarDatos(base.servicios),
+    eventos: nuevos?.eventos || clonarDatos(base.eventos),
+    contacto: {
+      ...clonarDatos(base.contacto),
+      ...(nuevos?.contacto || {}),
+    },
+    promo: nuevos?.promo || "",
+  };
 }
+
 function getSiteData() {
   const saved = localStorage.getItem(EL_CIRCULO_DATA_KEY);
 
   if (!saved) {
     localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
-    return structuredClone(defaultSiteData);
+    return clonarDatos(defaultSiteData);
   }
 
   try {
     const parsed = JSON.parse(saved);
-    return {
-      ...structuredClone(defaultSiteData),
-      ...parsed,
-    };
+    return combinarDatos(defaultSiteData, parsed);
   } catch {
     localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
-    return structuredClone(defaultSiteData);
+    return clonarDatos(defaultSiteData);
   }
 }
+
+async function saveSiteData(data) {
+  const datosCompletos = combinarDatos(defaultSiteData, data);
+
+  localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(datosCompletos));
+
+  if (window.FirebaseDB) {
+    const ref = window.FirebaseDB.doc(
+      window.FirebaseDB.db,
+      "configuracion",
+      "siteData"
+    );
+
+    await window.FirebaseDB.setDoc(ref, datosCompletos);
+  }
+
+  return datosCompletos;
+}
+
 async function cargarDatosDesdeFirebase() {
-  if (!window.FirebaseDB) return getSiteData();
+  if (!window.FirebaseDB) {
+    return getSiteData();
+  }
 
   try {
     const ref = window.FirebaseDB.doc(
@@ -271,24 +302,32 @@ async function cargarDatosDesdeFirebase() {
     const snap = await window.FirebaseDB.getDoc(ref);
 
     if (snap.exists()) {
-      const datos = {
-        ...structuredClone(defaultSiteData),
-        ...snap.data(),
-      };
+      const datosFirebase = combinarDatos(defaultSiteData, snap.data());
+      const datosLocalesActuales = localStorage.getItem(EL_CIRCULO_DATA_KEY);
+      const datosFirebaseTexto = JSON.stringify(datosFirebase);
 
-      localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(datos));
-      return datos;
+      localStorage.setItem(EL_CIRCULO_DATA_KEY, datosFirebaseTexto);
+
+      const esPanel = window.location.pathname.includes("panel.html");
+      const yaRecargo = sessionStorage.getItem("elcirculo-recargado-firebase");
+
+      if (!esPanel && datosLocalesActuales && datosLocalesActuales !== datosFirebaseTexto && !yaRecargo) {
+        sessionStorage.setItem("elcirculo-recargado-firebase", "true");
+        location.reload();
+      }
+
+      return datosFirebase;
     }
 
     await window.FirebaseDB.setDoc(ref, defaultSiteData);
     localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
-    return structuredClone(defaultSiteData);
+
+    return clonarDatos(defaultSiteData);
   } catch (error) {
-    console.error("Error cargando Firebase:", error);
+    console.error("Error cargando datos desde Firebase:", error);
     return getSiteData();
   }
 }
-
 
 function getServicios() {
   return getSiteData().servicios;
@@ -310,28 +349,52 @@ function getContacto() {
   return getSiteData().contacto;
 }
 
+function getPromo() {
+  return getSiteData().promo || "";
+}
+
 async function guardarServicios(servicios) {
   const data = getSiteData();
   data.servicios = servicios;
   await saveSiteData(data);
 }
 
-function guardarHorarios(horarios) {
+async function guardarHorarios(horarios) {
   const data = getSiteData();
   data.horarios = horarios;
   await saveSiteData(data);
 }
 
-function guardarEventos(eventos) {
+async function guardarEventos(eventos) {
   const data = getSiteData();
   data.eventos = eventos;
   await saveSiteData(data);
 }
 
-function guardarContacto(contacto) {
+async function guardarContacto(contacto) {
   const data = getSiteData();
   data.contacto = contacto;
   await saveSiteData(data);
+}
+
+async function guardarPromo(promo) {
+  const data = getSiteData();
+  data.promo = promo;
+  await saveSiteData(data);
+}
+
+async function restaurarDatosIniciales() {
+  localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
+
+  if (window.FirebaseDB) {
+    const ref = window.FirebaseDB.doc(
+      window.FirebaseDB.db,
+      "configuracion",
+      "siteData"
+    );
+
+    await window.FirebaseDB.setDoc(ref, defaultSiteData);
+  }
 }
 
 function obtenerDiaSemana(fechaISO) {
@@ -381,6 +444,11 @@ function convertirArchivoABase64(file) {
       return;
     }
 
+    if (file.size > 700 * 1024) {
+      reject("La imagen es muy pesada. Usa una imagen menor a 700 KB.");
+      return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = () => resolve(reader.result);
@@ -399,12 +467,24 @@ window.ElCirculoData = {
   getHorarios,
   getEventos,
   getContacto,
+  getPromo,
   guardarServicios,
   guardarHorarios,
   guardarEventos,
   guardarContacto,
+  guardarPromo,
+  restaurarDatosIniciales,
   estaDentroDelHorario,
   convertirArchivoABase64,
-  getPromo,
-guardarPromo,
 };
+
+window.ElCirculoDataReady = new Promise((resolve) => {
+  if (window.FirebaseDB) {
+    cargarDatosDesdeFirebase().then(resolve);
+  } else {
+    window.addEventListener("firebase-ready", async () => {
+      const datos = await cargarDatosDesdeFirebase();
+      resolve(datos);
+    });
+  }
+});

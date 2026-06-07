@@ -1,10 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
 import {
-  getFirestore,
+  initializeFirestore,
   doc,
   getDoc,
-  setDoc,
-  onSnapshot
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -17,12 +17,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false
+});
 
 window.FirebaseDB = {
   db,
   doc,
   getDoc,
-  setDoc,
-  onSnapshot
+  setDoc
 };
+
+window.dispatchEvent(new Event("firebase-ready"));

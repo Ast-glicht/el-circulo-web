@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  await window.ElCirculoData.cargarDatosDesdeFirebase();
+  if (window.ElCirculoDataReady) {
+    await window.ElCirculoDataReady;
+  }
+
   configurarCerrarSesion();
   configurarSeccionesPanel();
-
   configurarEventos();
   configurarHorarios();
   configurarPromos();
@@ -24,7 +26,7 @@ function configurarCerrarSesion() {
   if (!btnCerrar) return;
 
   btnCerrar.addEventListener("click", () => {
-  localStorage.removeItem("rolActivo");
+
     window.location.href = "inicio.html";
   });
 }
@@ -43,10 +45,7 @@ function configurarSeccionesPanel() {
       secciones.forEach((seccion) => seccion.classList.remove("active"));
 
       const section = document.getElementById(`section-${seccionActiva}`);
-
-      if (section) {
-        section.classList.add("active");
-      }
+      if (section) section.classList.add("active");
     });
   });
 }
@@ -57,8 +56,8 @@ function obtenerEventos() {
   return window.ElCirculoData.getEventos();
 }
 
-function guardarEventos(eventos) {
-  window.ElCirculoData.guardarEventos(eventos);
+async function guardarEventos(eventos) {
+  await window.ElCirculoData.guardarEventos(eventos);
 }
 
 function configurarEventos() {
@@ -76,6 +75,7 @@ function configurarEventos() {
     btnLimpiar.addEventListener("click", limpiarFormularioEvento);
   }
 }
+
 function configurarPreviewImagenEvento() {
   const inputImagen = document.getElementById("eventoImagen");
   const nombreImagen = document.getElementById("eventoImagenNombre");
@@ -94,9 +94,16 @@ function configurarPreviewImagenEvento() {
       return;
     }
 
-    if (nombreImagen) {
-      nombreImagen.textContent = archivo.name;
+    if (archivo.size > 700 * 1024) {
+      alert("La imagen es muy pesada. Usa una imagen menor a 700 KB.");
+      inputImagen.value = "";
+      if (nombreImagen) nombreImagen.textContent = "Sin imagen seleccionada";
+      previewBox.classList.remove("active");
+      previewImg.removeAttribute("src");
+      return;
     }
+
+    if (nombreImagen) nombreImagen.textContent = archivo.name;
 
     const reader = new FileReader();
 
@@ -108,6 +115,7 @@ function configurarPreviewImagenEvento() {
     reader.readAsDataURL(archivo);
   });
 }
+
 async function guardarEvento() {
   const id = document.getElementById("eventoId").value;
   const titulo = document.getElementById("eventoTitulo").value.trim();
@@ -123,58 +131,62 @@ async function guardarEvento() {
     return;
   }
 
-  const eventos = obtenerEventos();
-  const imagenBase64 = await window.ElCirculoData.convertirArchivoABase64(imagenFile);
+  try {
+    const eventos = obtenerEventos();
+    const imagenBase64 = await window.ElCirculoData.convertirArchivoABase64(imagenFile);
 
-  if (id) {
-    const eventosActualizados = eventos.map((evento) => {
-      if (evento.id === Number(id)) {
-        return {
-          ...evento,
-          titulo,
-          fecha,
-          hora,
-          estado,
-          descripcion,
-          video,
-          imagen: imagenBase64 || evento.imagen || "",
-        };
-      }
+    if (id) {
+      const eventosActualizados = eventos.map((evento) => {
+        if (evento.id === Number(id)) {
+          return {
+            ...evento,
+            titulo,
+            fecha,
+            hora,
+            estado,
+            descripcion,
+            video,
+            imagen: imagenBase64 || evento.imagen || "",
+          };
+        }
 
-      return evento;
-    });
+        return evento;
+      });
 
-    await guardarEventos(eventosActualizados);
-  } else {
-    const nuevoEvento = {
-      id: Date.now(),
-      titulo,
-      fecha,
-      hora,
-      estado,
-      descripcion,
-      imagen: imagenBase64 || "",
-      video,
-    };
+      await guardarEventos(eventosActualizados);
+    } else {
+      const nuevoEvento = {
+        id: Date.now(),
+        titulo,
+        fecha,
+        hora,
+        estado,
+        descripcion,
+        imagen: imagenBase64 || "",
+        video,
+      };
 
-    eventos.push(nuevoEvento);
-    await guardarEventos(eventos);
+      eventos.push(nuevoEvento);
+      await guardarEventos(eventos);
+    }
+
+    limpiarFormularioEvento();
+    renderizarEventos();
+
+    alert("Evento guardado correctamente.");
+  } catch (error) {
+    console.error(error);
+    alert(error || "No se pudo guardar el evento.");
   }
-
-  limpiarFormularioEvento();
-  renderizarEventos();
-
-  alert("Evento guardado correctamente.");
 }
 
 function renderizarEventos() {
   const lista = document.getElementById("listaEventos");
-
   if (!lista) return;
 
   const eventos = obtenerEventos();
 
-  if (eventos.length === 0) {
+  if (!eventos.length) {
     lista.innerHTML = `
       <div class="admin-empty-state">
         <h3>No hay eventos registrados</h3>
@@ -206,9 +218,7 @@ function renderizarEventos() {
 }
 
 function editarEvento(id) {
-  const eventos = obtenerEventos();
-  const evento = eventos.find((item) => item.id === id);
-
+  const evento = obtenerEventos().find((item) => item.id === id);
   if (!evento) return;
 
   document.getElementById("eventoId").value = evento.id;
@@ -218,38 +228,31 @@ function editarEvento(id) {
   document.getElementById("eventoEstado").value = evento.estado;
   document.getElementById("eventoDescripcion").value = evento.descripcion;
 
-  if (document.getElementById("eventoVideo")) {
-    document.getElementById("eventoVideo").value = evento.video || "";
-  }
-const nombreImagen = document.getElementById("eventoImagenNombre");
-const previewBox = document.getElementById("eventoImagenPreviewBox");
-const previewImg = document.getElementById("eventoImagenPreview");
+  const videoInput = document.getElementById("eventoVideo");
+  if (videoInput) videoInput.value = evento.video || "";
 
-if (evento.imagen && previewBox && previewImg) {
-  previewImg.src = evento.imagen;
-  previewBox.classList.add("active");
+  const nombreImagen = document.getElementById("eventoImagenNombre");
+  const previewBox = document.getElementById("eventoImagenPreviewBox");
+  const previewImg = document.getElementById("eventoImagenPreview");
 
-  if (nombreImagen) {
-    nombreImagen.textContent = "Imagen actual del evento";
+  if (evento.imagen && previewBox && previewImg) {
+    previewImg.src = evento.imagen;
+    previewBox.classList.add("active");
+    if (nombreImagen) nombreImagen.textContent = "Imagen actual del evento";
+  } else {
+    if (previewBox) previewBox.classList.remove("active");
+    if (previewImg) previewImg.removeAttribute("src");
+    if (nombreImagen) nombreImagen.textContent = "Sin imagen seleccionada";
   }
-} else {
-  if (previewBox) previewBox.classList.remove("active");
-  if (previewImg) previewImg.removeAttribute("src");
-  if (nombreImagen) nombreImagen.textContent = "Sin imagen seleccionada";
-}
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function eliminarEvento(id) {
+async function eliminarEvento(id) {
   const confirmar = confirm("¿Seguro que deseas eliminar este evento?");
-
   if (!confirmar) return;
 
   const eventos = obtenerEventos().filter((evento) => evento.id !== id);
-
   await guardarEventos(eventos);
   renderizarEventos();
 }
@@ -263,21 +266,14 @@ function limpiarFormularioEvento() {
   const previewImg = document.getElementById("eventoImagenPreview");
 
   if (nombreImagen) nombreImagen.textContent = "Sin imagen seleccionada";
-
-  if (previewBox) {
-    previewBox.classList.remove("active");
-  }
-
-  if (previewImg) {
-    previewImg.removeAttribute("src");
-  }
+  if (previewBox) previewBox.classList.remove("active");
+  if (previewImg) previewImg.removeAttribute("src");
 }
 
 /* HORARIOS */
 
 function configurarHorarios() {
   const formHorario = document.getElementById("formHorario");
-
   if (!formHorario) return;
 
   formHorario.innerHTML = `
@@ -303,7 +299,7 @@ function configurarHorarios() {
     </div>
   `;
 
-  await formHorario.addEventListener("submit", async (event) => {
+  formHorario.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const dias = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
@@ -318,8 +314,7 @@ function configurarHorarios() {
       };
     });
 
-    window.ElCirculoData.guardarHorarios(horarios);
-
+    await window.ElCirculoData.guardarHorarios(horarios);
     alert("Horarios guardados correctamente.");
   });
 }
@@ -344,25 +339,23 @@ function cargarHorarios() {
 
 function configurarPromos() {
   const formPromo = document.getElementById("formPromo");
-
   if (!formPromo) return;
 
   formPromo.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const promo = document.getElementById("promoTexto").value.trim();
-
-   await window.ElCirculoData.guardarPromo(promo);
+    await window.ElCirculoData.guardarPromo(promo);
 
     alert("Promoción guardada correctamente.");
   });
 }
 
 function cargarPromo() {
- const promo = window.ElCirculoData.getPromo();
-  if (!promo) return;
+  const promo = window.ElCirculoData.getPromo();
+  const inputPromo = document.getElementById("promoTexto");
 
-  document.getElementById("promoTexto").value = promo;
+  if (inputPromo) inputPromo.value = promo || "";
 }
 
 /* SERVICIOS */
@@ -385,7 +378,6 @@ function configurarServicios() {
 
 function cargarSelectServicios() {
   const servicioSelect = document.getElementById("servicioSelect");
-
   if (!servicioSelect) return;
 
   const servicios = window.ElCirculoData.getServicios();
@@ -394,14 +386,11 @@ function cargarSelectServicios() {
     .map((servicio) => `<option value="${servicio.id}">${servicio.title}</option>`)
     .join("");
 
-  if (servicios[0]) {
-    cargarServicioEnFormulario(servicios[0].id);
-  }
+  if (servicios[0]) cargarServicioEnFormulario(servicios[0].id);
 }
 
 function cargarServicioEnFormulario(id) {
   const servicio = window.ElCirculoData.getServicioById(id);
-
   if (!servicio) return;
 
   document.getElementById("servicioId").value = servicio.id;
@@ -428,7 +417,7 @@ function cargarServicioEnFormulario(id) {
 async function guardarServicioEditado() {
   const servicios = window.ElCirculoData.getServicios();
   const id = document.getElementById("servicioId").value;
-  const imagenFile = document.getElementById("servicioImagen").files[0];
+  const imagenFile = document.getElementById("servicioImagen")?.files[0];
   const imagenBase64 = await window.ElCirculoData.convertirArchivoABase64(imagenFile);
 
   const serviciosActualizados = servicios.map((servicio) => {
@@ -452,17 +441,9 @@ async function guardarServicioEditado() {
       },
     };
 
-    if (servicio.tipoAgenda === "gaming") {
-      actualizado.precioHoraPersona = precioNumero;
-    }
-
-    if (servicio.tipoAgenda === "mantenimiento") {
-      actualizado.precioDiagnostico = precioNumero;
-    }
-
-    if (servicio.tipoAgenda === "liberacion") {
-      actualizado.precioLiberacion = precioNumero;
-    }
+    if (servicio.tipoAgenda === "gaming") actualizado.precioHoraPersona = precioNumero;
+    if (servicio.tipoAgenda === "mantenimiento") actualizado.precioDiagnostico = precioNumero;
+    if (servicio.tipoAgenda === "liberacion") actualizado.precioLiberacion = precioNumero;
 
     return actualizado;
   });
@@ -477,10 +458,9 @@ async function guardarServicioEditado() {
 
 function configurarContacto() {
   const formContacto = document.getElementById("formContacto");
-
   if (!formContacto) return;
 
-  await formContacto.addEventListener("submit", async (event) => {
+  formContacto.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const contacto = {
@@ -494,8 +474,7 @@ function configurarContacto() {
       mapaUrl: document.getElementById("mapaUrl").value.trim(),
     };
 
-    window.ElCirculoData.guardarContacto(contacto);
-
+    await window.ElCirculoData.guardarContacto(contacto);
     alert("Contacto guardado correctamente.");
   });
 }
@@ -505,14 +484,14 @@ function cargarContacto() {
 
   if (!document.getElementById("formContacto")) return;
 
-  document.getElementById("facebookTexto").value = contacto.facebookTexto;
-  document.getElementById("facebookUrl").value = contacto.facebookUrl;
-  document.getElementById("instagramTexto").value = contacto.instagramTexto;
-  document.getElementById("instagramUrl").value = contacto.instagramUrl;
-  document.getElementById("telefonoTexto").value = contacto.telefonoTexto;
-  document.getElementById("telefonoUrl").value = contacto.telefonoUrl;
-  document.getElementById("direccionContacto").value = contacto.direccion;
-  document.getElementById("mapaUrl").value = contacto.mapaUrl;
+  document.getElementById("facebookTexto").value = contacto.facebookTexto || "";
+  document.getElementById("facebookUrl").value = contacto.facebookUrl || "";
+  document.getElementById("instagramTexto").value = contacto.instagramTexto || "";
+  document.getElementById("instagramUrl").value = contacto.instagramUrl || "";
+  document.getElementById("telefonoTexto").value = contacto.telefonoTexto || "";
+  document.getElementById("telefonoUrl").value = contacto.telefonoUrl || "";
+  document.getElementById("direccionContacto").value = contacto.direccion || "";
+  document.getElementById("mapaUrl").value = contacto.mapaUrl || "";
 }
 
 /* RESPALDO */
@@ -521,13 +500,8 @@ function configurarRespaldo() {
   const btnExportar = document.getElementById("exportarDatos");
   const btnRestaurar = document.getElementById("restaurarDatos");
 
-  if (btnExportar) {
-    btnExportar.addEventListener("click", exportarDatos);
-  }
-
-  if (btnRestaurar) {
-    btnRestaurar.addEventListener("click", restaurarDatos);
-  }
+  if (btnExportar) btnExportar.addEventListener("click", exportarDatos);
+  if (btnRestaurar) btnRestaurar.addEventListener("click", restaurarDatos);
 }
 
 function exportarDatos() {
@@ -547,12 +521,12 @@ function exportarDatos() {
   URL.revokeObjectURL(url);
 }
 
-function restaurarDatos() {
-  const confirmar = confirm("Esto eliminará los datos personalizados guardados. ¿Deseas continuar?");
-
+async function restaurarDatos() {
+  const confirmar = confirm("Esto restaurará los datos iniciales. ¿Deseas continuar?");
   if (!confirmar) return;
 
-  localStorage.removeItem("elcirculo-site-data-v1");
+  await window.ElCirculoData.restaurarDatosIniciales();
 
-  alert("Datos restaurados. Recarga la página para ver los valores iniciales.");
+  alert("Datos restaurados correctamente.");
+  location.reload();
 }
