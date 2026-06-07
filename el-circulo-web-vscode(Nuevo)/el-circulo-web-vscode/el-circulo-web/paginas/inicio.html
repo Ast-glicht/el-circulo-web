@@ -39,45 +39,56 @@
   </header>
 
   <main>
-    <section class="hero section active" id="inicio">
-      <div class="container hero-grid">
-        <div>
+    <section class="hero section active home-hero-redesign" id="inicio">
+      <div class="container home-hero-layout">
+
+        <div class="home-hero-left">
           <p class="eyebrow">Zona gamer · torneos · soporte técnico</p>
 
-          <h1><span>El Círculo Gaming House</span></h1>
+          <h1 class="home-main-title">
+            <span>El Círculo</span>
+            <small>Gaming House</small>
+          </h1>
 
-          <div class="stats home-service-buttons">
-  <a class="home-service-btn" href="servicios.html?servicio=ps4">
-    <strong>PS4 / PS5</strong>
-    <span>Experiencia gamer</span>
-  </a>
+          <div class="home-action-grid">
+            <a class="home-action-card disabled" href="#" onclick="return false;">
+              <strong>PS4 / PS5</strong>
+              <span>En espera</span>
+              <em>Próximamente</em>
+            </a>
 
-  <a class="home-service-btn" href="servicios.html?servicio=switch">
-    <strong>Switch</strong>
-    <span>Diversión para todos</span>
-  </a>
+            <a class="home-action-card switch-card" href="agendar.html?servicio=switch">
+              <strong>Switch</strong>
+              <span>Agendar diversión</span>
+              <em>Ir a agenda</em>
+            </a>
 
-  <a class="home-service-btn" href="servicios.html?servicio=mantenimiento">
-    <strong>Soporte</strong>
-    <span>Mantenimiento y liberación</span>
-  </a>
-</div>
-
-        <div class="hero-card neon-card floating logo-card">
-          <div class="screen-glow"></div>
-
-          <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="hero-logo">
-
-          <h2>Tu punto gamer en Managua</h2>
-
-          <div class="feature-list-clean">
-            <p>Gaming en consolas</p>
-            <p>Atención cercana</p>
-            <p>Servicios técnicos</p>
-            <p>Ubicación accesible</p>
-            <p>Ambiente moderno y cómodo</p>
+            <a class="home-action-card support-card" href="agendar.html?servicio=mantenimiento">
+              <strong>Soporte</strong>
+              <span>Agendar mantenimiento</span>
+              <em>Ir a agenda</em>
+            </a>
           </div>
         </div>
+
+        <div class="home-hero-right">
+          <div class="hero-card neon-card floating logo-card home-logo-panel">
+            <div class="screen-glow"></div>
+
+            <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="hero-logo">
+
+            <h2>Tu punto gamer en Managua</h2>
+
+            <div class="feature-list-clean home-feature-list">
+              <p>Gaming en consolas</p>
+              <p>Atención cercana</p>
+              <p>Servicios técnicos</p>
+              <p>Ubicación accesible</p>
+              <p>Ambiente moderno y cómodo</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
@@ -100,7 +111,6 @@
   <script src="../script/site-data.js"></script>
   <script src="../script/inicio.js"></script>
   <script src="../script/auth.js"></script>
-  <script src="../script/panel.js"></script>
   <script src="../script/sprite-catalog.js"></script>
   <script src="../script/easter-sprites.js"></script>
 </body>
