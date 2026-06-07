@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.ElCirculoData.cargarDatosDesdeFirebase();
   configurarCerrarSesion();
   configurarSeccionesPanel();
 
@@ -143,7 +144,7 @@ async function guardarEvento() {
       return evento;
     });
 
-    guardarEventos(eventosActualizados);
+    await guardarEventos(eventosActualizados);
   } else {
     const nuevoEvento = {
       id: Date.now(),
@@ -157,7 +158,7 @@ async function guardarEvento() {
     };
 
     eventos.push(nuevoEvento);
-    guardarEventos(eventos);
+    await guardarEventos(eventos);
   }
 
   limpiarFormularioEvento();
@@ -249,7 +250,7 @@ function eliminarEvento(id) {
 
   const eventos = obtenerEventos().filter((evento) => evento.id !== id);
 
-  guardarEventos(eventos);
+  await guardarEventos(eventos);
   renderizarEventos();
 }
 
@@ -302,7 +303,7 @@ function configurarHorarios() {
     </div>
   `;
 
-  formHorario.addEventListener("submit", (event) => {
+  await formHorario.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const dias = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
@@ -346,20 +347,19 @@ function configurarPromos() {
 
   if (!formPromo) return;
 
-  formPromo.addEventListener("submit", (event) => {
+  formPromo.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const promo = document.getElementById("promoTexto").value.trim();
 
-    localStorage.setItem("promoCirculo", promo);
+   await window.ElCirculoData.guardarPromo(promo);
 
     alert("Promoción guardada correctamente.");
   });
 }
 
 function cargarPromo() {
-  const promo = localStorage.getItem("promoCirculo");
-
+ const promo = window.ElCirculoData.getPromo();
   if (!promo) return;
 
   document.getElementById("promoTexto").value = promo;
@@ -467,7 +467,7 @@ async function guardarServicioEditado() {
     return actualizado;
   });
 
-  window.ElCirculoData.guardarServicios(serviciosActualizados);
+  await window.ElCirculoData.guardarServicios(serviciosActualizados);
   cargarSelectServicios();
 
   alert("Servicio guardado correctamente.");
@@ -480,7 +480,7 @@ function configurarContacto() {
 
   if (!formContacto) return;
 
-  formContacto.addEventListener("submit", (event) => {
+  await formContacto.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const contacto = {

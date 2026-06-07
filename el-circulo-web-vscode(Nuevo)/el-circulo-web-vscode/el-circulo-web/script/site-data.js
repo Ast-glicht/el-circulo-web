@@ -1,6 +1,8 @@
 const EL_CIRCULO_DATA_KEY = "elcirculo-site-data-v1";
 
 const defaultSiteData = {
+  promo: "",
+  
   horarios: {
     domingo: { abierto: true, inicio: "17:30", fin: "22:00", texto: "5:30 p.m.–10:00 p.m." },
     lunes: { abierto: true, inicio: "08:00", fin: "20:00", texto: "8:00 a.m.–8:00 p.m." },
@@ -228,7 +230,15 @@ const defaultSiteData = {
     mapaUrl: "https://www.google.com/maps?q=Edificios%20de%20la%20UNI,%20Av.%20Universitaria%20Casimiro%20Sotelo,%20Managua%2011125&z=16&output=embed",
   },
 };
+function getPromo() {
+  return getSiteData().promo || "";
+}
 
+async function guardarPromo(promo) {
+  const data = getSiteData();
+  data.promo = promo;
+  await saveSiteData(data);
+}
 function getSiteData() {
   const saved = localStorage.getItem(EL_CIRCULO_DATA_KEY);
 
@@ -248,10 +258,37 @@ function getSiteData() {
     return structuredClone(defaultSiteData);
   }
 }
+async function cargarDatosDesdeFirebase() {
+  if (!window.FirebaseDB) return getSiteData();
 
-function saveSiteData(data) {
-  localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(data));
+  try {
+    const ref = window.FirebaseDB.doc(
+      window.FirebaseDB.db,
+      "configuracion",
+      "siteData"
+    );
+
+    const snap = await window.FirebaseDB.getDoc(ref);
+
+    if (snap.exists()) {
+      const datos = {
+        ...structuredClone(defaultSiteData),
+        ...snap.data(),
+      };
+
+      localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(datos));
+      return datos;
+    }
+
+    await window.FirebaseDB.setDoc(ref, defaultSiteData);
+    localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
+    return structuredClone(defaultSiteData);
+  } catch (error) {
+    console.error("Error cargando Firebase:", error);
+    return getSiteData();
+  }
 }
+
 
 function getServicios() {
   return getSiteData().servicios;
@@ -273,28 +310,28 @@ function getContacto() {
   return getSiteData().contacto;
 }
 
-function guardarServicios(servicios) {
+async function guardarServicios(servicios) {
   const data = getSiteData();
   data.servicios = servicios;
-  saveSiteData(data);
+  await saveSiteData(data);
 }
 
 function guardarHorarios(horarios) {
   const data = getSiteData();
   data.horarios = horarios;
-  saveSiteData(data);
+  await saveSiteData(data);
 }
 
 function guardarEventos(eventos) {
   const data = getSiteData();
   data.eventos = eventos;
-  saveSiteData(data);
+  await saveSiteData(data);
 }
 
 function guardarContacto(contacto) {
   const data = getSiteData();
   data.contacto = contacto;
-  saveSiteData(data);
+  await saveSiteData(data);
 }
 
 function obtenerDiaSemana(fechaISO) {
@@ -356,6 +393,7 @@ function convertirArchivoABase64(file) {
 window.ElCirculoData = {
   getSiteData,
   saveSiteData,
+  cargarDatosDesdeFirebase,
   getServicios,
   getServicioById,
   getHorarios,
@@ -367,4 +405,6 @@ window.ElCirculoData = {
   guardarContacto,
   estaDentroDelHorario,
   convertirArchivoABase64,
+  getPromo,
+guardarPromo,
 };
