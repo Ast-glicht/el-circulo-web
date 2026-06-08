@@ -133,8 +133,7 @@ async function guardarEvento() {
 
   try {
     const eventos = obtenerEventos();
-    const imagenBase64 = await window.ElCirculoData.convertirArchivoABase64(imagenFile);
-
+  const imagenBase64 = "";
     if (id) {
       const eventosActualizados = eventos.map((evento) => {
         if (evento.id === Number(id)) {
@@ -418,8 +417,7 @@ async function guardarServicioEditado() {
   const servicios = window.ElCirculoData.getServicios();
   const id = document.getElementById("servicioId").value;
   const imagenFile = document.getElementById("servicioImagen")?.files[0];
-  const imagenBase64 = await window.ElCirculoData.convertirArchivoABase64(imagenFile);
-
+const imagenBase64 = "";
   const serviciosActualizados = servicios.map((servicio) => {
     if (servicio.id !== id) return servicio;
 
