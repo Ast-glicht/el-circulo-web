@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FAQ | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+  <link rel="icon" type="image/png" href="../logocortado.jpg">
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="scan-transition" id="scanTransition">
+    <div class="scan-flash"></div>
+    <div class="scan-line"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a href="inicio.html" class="brand">
+        <img src="../logocortado.jpg" alt="Logo El Círculo" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <div class="menu-wrapper">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="menu-panel" id="menuPanel">
+          <a href="inicio.html">Inicio</a>
+          <a href="servicios.html">Servicios</a>
+          <a href="anuncios.html">Anuncios</a>
+          <a href="horarios.html">Horarios</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="galeria.html">Galería</a>
+          <a href="contactanos.html">Contacto</a>
+          <a href="faq.html" class="active-page">FAQ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container faq-page">
+    <section class="faq-hero">
+      <p class="eyebrow">Soporte gamer</p>
+      <h1>Preguntas Frecuentes</h1>
+      <p>
+        Aquí respondemos las dudas más comunes sobre reservas, consolas,
+        horarios, eventos y servicios técnicos.
+      </p>
+    </section>
+
+    <section class="faq-container" id="faqContainer"></section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+
+    <div class="container footer-content">
+      <p>© 2026 El Círculo Gaming House. Todos los Derechos Reservados.</p>
+
+      <div class="footer-socials">
+        <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank" class="social-icon" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank" class="social-icon" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="https://www.tiktok.com/@elcirculogaminghouse" target="_blank" class="social-icon" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../script/firebase-config.js"></script>
+  <script src="../script/site-data.js"></script>
+  <script src="../script/auth.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (window.ElCirculoDataReady) {
+        await window.ElCirculoDataReady;
+      }
+
+      renderizarFAQPublico();
+      configurarMenu();
+      configurarTransicion();
+    });
+
+    function renderizarFAQPublico() {
+      const contenedor = document.getElementById("faqContainer");
+
+      if (!contenedor || !window.ElCirculoData) return;
+
+      const faq = window.ElCirculoData.getFAQ();
+
+      if (!faq.length) {
+        contenedor.innerHTML = `
+          <details class="faq-item">
+            <summary>No hay preguntas disponibles</summary>
+            <p>Pronto agregaremos nuevas preguntas frecuentes.</p>
+          </details>
+        `;
+        return;
+      }
+
+      contenedor.innerHTML = faq
+        .map((item) => `
+          <details class="faq-item">
+            <summary>${item.pregunta}</summary>
+            <p>${item.respuesta}</p>
+          </details>
+        `)
+        .join("");
+    }
+
+    function configurarMenu() {
+      const menuToggle = document.getElementById("menuToggle");
+      const menuPanel = document.getElementById("menuPanel");
+
+      if (!menuToggle || !menuPanel) return;
+
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        menuToggle.classList.toggle("open");
+        menuPanel.classList.toggle("show");
+      });
+
+      menuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuToggle.classList.remove("open");
+        menuPanel.classList.remove("show");
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          menuToggle.classList.remove("open");
+          menuPanel.classList.remove("show");
+        }
+      });
+    }
+
+    function configurarTransicion() {
+      const scanTransition = document.getElementById("scanTransition");
+
+      document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          const href = this.getAttribute("href");
+          const target = this.getAttribute("target");
+
+          if (
+            !href ||
+            href.startsWith("#") ||
+            href.startsWith("http") ||
+            href.startsWith("mailto:") ||
+            href.startsWith("tel:") ||
+            target === "_blank"
+          ) return;
+
+          e.preventDefault();
+
+          if (scanTransition) {
+            scanTransition.classList.add("active");
+          }
+
+          setTimeout(() => {
+            window.location.href = href;
+          }, 520);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

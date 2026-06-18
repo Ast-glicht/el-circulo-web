@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Anuncios | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+  <link rel="icon" type="image/png" href="../logocortado.jpg">
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="scan-transition" id="scanTransition">
+    <div class="scan-flash"></div>
+    <div class="scan-line"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+
+      <a class="brand" href="inicio.html">
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <div class="menu-wrapper">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="menu-panel" id="menuPanel">
+          <a href="inicio.html">Inicio</a>
+          <a href="servicios.html">Servicios</a>
+          <a href="horarios.html">Horarios</a>
+          <a href="anuncios.html" class="active-page">Anuncios</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="galeria.html">Galería</a>
+          <a href="contactanos.html">Contacto</a>
+          <a href="faq.html">FAQ</a>
+        </nav>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+    <section class="section active anuncios-page">
+      <div class="container">
+
+        <div class="section-heading">
+          <p class="eyebrow">Noticias oficiales</p>
+          <h1>Anuncios</h1>
+          <p>
+            Revisá avisos importantes, promociones, cambios de horario y novedades de El Círculo Gaming House.
+          </p>
+        </div>
+
+        <div class="anuncios-layout">
+
+          <article class="anuncio-card anuncio-promociones">
+            <span class="anuncio-tag">Promociones</span>
+            <h2>Promociones próximamente</h2>
+            <p>
+              Estamos preparando promociones especiales para horas de juego en PS4,
+              PS5 y Nintendo Switch.
+            </p>
+            <small>11 de junio de 2026</small>
+          </article>
+
+          <article class="anuncio-card anuncio-horarios">
+            <span class="anuncio-tag">Horarios</span>
+            <h2>Actualización de horarios</h2>
+            <p>
+              Los horarios de atención y eventos serán publicados en la sección de
+              horarios para que podás revisarlos fácilmente.
+            </p>
+            <small>11 de junio de 2026</small>
+          </article>
+
+          <article class="anuncio-card anuncio-eventos">
+            <span class="anuncio-tag">Eventos</span>
+            <h2>Nuevos eventos disponibles</h2>
+            <p>
+              Muy pronto tendremos nuevos torneos, noches gamer y dinámicas especiales
+              para nuestra comunidad.
+            </p>
+            <small>11 de junio de 2026</small>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+
+    <div class="container footer-content">
+      <p>© 2026 El Círculo Gaming House. Todos los Derechos Reservados.</p>
+
+      <div class="footer-socials">
+        <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank" class="social-icon" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank" class="social-icon" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="https://www.tiktok.com/@elcirculogaminghouse" target="_blank" class="social-icon" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script/anuncios.js"></script>
+
+  <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const menuPanel = document.getElementById("menuPanel");
+
+    if (menuToggle && menuPanel) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuToggle.classList.toggle("open");
+        menuPanel.classList.toggle("show");
+      });
+
+      menuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuToggle.classList.remove("open");
+        menuPanel.classList.remove("show");
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          menuToggle.classList.remove("open");
+          menuPanel.classList.remove("show");
+        }
+      });
+    }
+
+    const scanTransition = document.getElementById("scanTransition");
+
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        const target = this.getAttribute("target");
+
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          target === "_blank"
+        ) return;
+
+        e.preventDefault();
+
+        scanTransition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 520);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Agendar | El Círculo Gaming House</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="../style/styles.css" />
+  <link rel="icon" type="image/png" href="../logocortado.jpg">
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="scan-transition" id="scanTransition">
+    <div class="scan-flash"></div>
+    <div class="scan-line"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html">
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <div class="menu-wrapper">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="menu-panel" id="menuPanel">
+          <a href="inicio.html">Inicio</a>
+          <a href="servicios.html">Servicios</a>
+          <a href="anuncios.html">Anuncios</a>
+          <a href="horarios.html">Horarios</a>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="galeria.html">Galería</a>
+          <a href="contactanos.html">Contacto</a>
+          <a href="faq.html">FAQ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Reserva tu servicio</p>
+          <h2 id="agendaTitle">Agendar servicio</h2>
+          <p id="agendaSubtitle">
+            Completa los datos necesarios para preparar tu solicitud.
+          </p>
+        </div>
+
+        <form class="agenda-form neon-card" id="agendaForm">
+          <section class="agenda-block">
+            <h3>Datos del cliente</h3>
+
+            <div class="agenda-grid">
+              <label>
+                Nombre y apellidos
+                <input type="text" id="clientName" name="clientName" placeholder="Ej: Juan Pérez" required>
+              </label>
+
+              <label>
+                Teléfono
+                <input type="tel" id="clientPhone" name="clientPhone" placeholder="Ej: 8942 8230" required>
+              </label>
+
+              <label>
+                Gmail
+                <input type="email" id="clientEmail" name="clientEmail" placeholder="ejemplo@gmail.com" required>
+              </label>
+            </div>
+          </section>
+
+          <section class="agenda-block" id="dynamicFields"></section>
+
+          <section class="agenda-summary neon-card" id="agendaSummary">
+            <h3>Resumen</h3>
+            <p id="summaryText">Selecciona los datos del servicio para ver el resumen.</p>
+          </section>
+
+          <div class="agenda-actions">
+            <button type="submit" class="btn btn-primary">Confirmar agenda</button>
+            <a href="servicios.html" class="btn btn-secondary">Volver a servicios</a>
+          </div>
+
+          <p class="form-status" id="agendaStatus"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+
+    <div class="container footer-content">
+      <p>© 2026 El Círculo Gaming House. Todos los Derechos Reservados.</p>
+
+      <div class="footer-socials">
+        <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank" class="social-icon" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank" class="social-icon" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="https://www.tiktok.com/@elcirculogaminghouse" target="_blank" class="social-icon" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../script/firebase-config.js"></script>
+  <script src="../script/site-data.js"></script>
+  <script src="../script/agendar.js"></script>
+  <script src="../script/auth.js"></script>
+  <script src="../script/sprite-catalog.js"></script>
+  <script src="../script/easter-sprites.js"></script>
+
+  <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const menuPanel = document.getElementById("menuPanel");
+
+    if (menuToggle && menuPanel) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        menuToggle.classList.toggle("open");
+        menuPanel.classList.toggle("show");
+      });
+
+      menuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuToggle.classList.remove("open");
+        menuPanel.classList.remove("show");
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          menuToggle.classList.remove("open");
+          menuPanel.classList.remove("show");
+        }
+      });
+    }
+
+    const scanTransition = document.getElementById("scanTransition");
+
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        const target = this.getAttribute("target");
+
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          target === "_blank"
+        ) return;
+
+        e.preventDefault();
+
+        scanTransition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 520);
+      });
+    });
+  </script>
+</body>
+</html>

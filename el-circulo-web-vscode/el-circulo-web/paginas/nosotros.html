@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Nosotros | El Círculo Gaming House</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../logocortado.jpg">
+  <link rel="stylesheet" href="../style/styles.css" />
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="scan-transition" id="scanTransition">
+    <div class="scan-flash"></div>
+    <div class="scan-line"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="brand" href="inicio.html">
+        <img src="../logo.jpg" alt="Logo El Círculo Gaming House" class="brand-logo">
+        <span>
+          <strong>EL CÍRCULO</strong>
+          <small>Gaming House</small>
+        </span>
+      </a>
+
+      <div class="menu-wrapper">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="menu-panel" id="menuPanel">
+          <a href="inicio.html">Inicio</a>
+          <a href="servicios.html">Servicios</a>
+          <a href="anuncios.html">Anuncios</a>
+          <a href="horarios.html">Horarios</a>
+          <a href="nosotros.html" class="active-page">Nosotros</a>
+          <a href="galeria.html">Galería</a>
+          <a href="contactanos.html">Contacto</a>
+          <a href="faq.html">FAQ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section about-page" id="nosotros">
+      <div class="container">
+        <div class="about-hero">
+          <p class="eyebrow">Identidad gamer</p>
+          <h2>Sobre nosotros</h2>
+          <p>
+            Somos un espacio creado para jugadores, amigos y comunidad. En El Círculo
+            Gaming House buscamos que cada visita combine entretenimiento, comodidad,
+            confianza y una experiencia gamer moderna.
+          </p>
+        </div>
+
+        <div class="about-main-grid">
+          <article class="about-card cyan">
+            <div class="about-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Misión</h3>
+            <p>
+              Ofrecer un ambiente gamer de calidad, con equipos, atención cercana y
+              servicios que hagan que cada visita sea cómoda, entretenida y memorable.
+            </p>
+          </article>
+
+          <article class="about-card green">
+            <div class="about-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Visión</h3>
+            <p>
+              Convertirnos en una referencia local para la comunidad gamer,
+              destacando por innovación, confianza, ambiente competitivo y pasión
+              por el entretenimiento.
+            </p>
+          </article>
+        </div>
+
+        <div class="about-stats">
+          <article>
+            <strong>Gaming</strong>
+            <span>Ambiente moderno</span>
+          </article>
+
+          <article>
+            <strong>Comunidad</strong>
+            <span>Espacio para compartir</span>
+          </article>
+
+          <article>
+            <strong>Experiencia</strong>
+            <span>Atención cercana</span>
+          </article>
+        </div>
+
+        <div class="about-values">
+          <article>
+            <i class="fa-solid fa-shield-halved"></i>
+            <h4>Integridad</h4>
+            <p>Trabajamos con honestidad, respeto y transparencia.</p>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-star"></i>
+            <h4>Excelencia</h4>
+            <p>Cuidamos cada detalle para brindar un mejor servicio.</p>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-users"></i>
+            <h4>Comunidad</h4>
+            <p>Queremos que cada jugador se sienta parte del círculo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div id="spriteFloor" aria-hidden="true"></div>
+
+    <div class="container footer-content">
+      <p>© 2026 El Círculo Gaming House. Todos los Derechos Reservados.</p>
+
+      <div class="footer-socials">
+        <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank" class="social-icon" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank" class="social-icon" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="https://www.tiktok.com/@elcirculogaminghouse" target="_blank" class="social-icon" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="../script/site-data.js"></script>
+  <script src="../script/panel.js"></script>
+  <script src="../script/nosotros.js"></script>
+  <script src="../script/sprite-catalog.js"></script>
+  <script src="../script/easter-sprites.js"></script>
+
+  <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const menuPanel = document.getElementById("menuPanel");
+
+    if (menuToggle && menuPanel) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuToggle.classList.toggle("open");
+        menuPanel.classList.toggle("show");
+      });
+
+      menuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
+        menuToggle.classList.remove("open");
+        menuPanel.classList.remove("show");
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          menuToggle.classList.remove("open");
+          menuPanel.classList.remove("show");
+        }
+      });
+    }
+
+    const scanTransition = document.getElementById("scanTransition");
+
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        const target = this.getAttribute("target");
+
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          target === "_blank"
+        ) return;
+
+        e.preventDefault();
+        scanTransition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 520);
+      });
+    });
+  </script>
+</body>
+</html>
