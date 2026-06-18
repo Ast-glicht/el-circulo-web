@@ -37,26 +37,34 @@ document.addEventListener("keydown", (event) => {
     konamiPosition = 0;
   }
 });
-
 function activarAccesoMovilAdmin() {
-  const elemento = document.querySelector(".brand-logo") || document.querySelector(".brand");
+  const brand = document.querySelector(".brand");
+  const logo = document.querySelector(".brand-logo");
+  const elemento = logo || brand;
 
   if (!elemento) return;
+
+  const estaEnInicio = window.location.pathname.includes("inicio.html");
 
   let taps = 0;
   let timer = null;
 
   elemento.addEventListener("click", (event) => {
+    if (!estaEnInicio) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
     taps++;
 
     clearTimeout(timer);
 
     timer = setTimeout(() => {
       taps = 0;
-    }, 2000);
+    }, 1200);
 
-    if (taps >= 7) {
-      event.preventDefault();
+    if (taps >= 3) {
+      clearTimeout(timer);
       taps = 0;
       mostrarLoginAdmin();
     }
