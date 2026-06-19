@@ -110,7 +110,10 @@
     <div id="spriteFloor" aria-hidden="true"></div>
 
     <div class="container footer-content">
-      <p>© 2026 El Círculo Gaming House. Todos los Derechos Reservados.</p>
+      <p class="footer-copy">
+        © 2026 El Círculo Gaming House.<br class="mobile-break">
+        Todos los Derechos Reservados.
+      </p>
 
       <div class="footer-socials">
         <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank" class="social-icon" aria-label="Facebook">
@@ -182,7 +185,9 @@
 
         e.preventDefault();
 
-        scanTransition.classList.add("active");
+        if (scanTransition) {
+          scanTransition.classList.add("active");
+        }
 
         setTimeout(() => {
           window.location.href = href;

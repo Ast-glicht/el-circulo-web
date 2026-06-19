@@ -3,6 +3,27 @@ const EL_CIRCULO_DATA_KEY = "elcirculo-site-data-v1";
 const defaultSiteData = {
   promo: "",
 
+  promociones: [
+    {
+      id: 1,
+      titulo: "Combo Gamer PS4",
+      descripcion: "2 horas de juego en PS4 con precio especial para grupos.",
+      activa: true
+    },
+    {
+      id: 2,
+      titulo: "Noche Gamer PS5",
+      descripcion: "Promoción especial para sesiones nocturnas en PlayStation 5.",
+      activa: true
+    },
+    {
+      id: 3,
+      titulo: "Switch con amigos",
+      descripcion: "Descuento especial para partidas grupales en Nintendo Switch.",
+      activa: true
+    }
+  ],
+
   faq: [
     {
       id: 1,
@@ -282,12 +303,27 @@ function normalizarEventos(eventos = []) {
   }));
 }
 
+function normalizarPromociones(promociones = []) {
+  return promociones.map((promo) => ({
+    id: promo.id || Date.now(),
+    titulo: promo.titulo || "",
+    descripcion: promo.descripcion || "",
+    activa: promo.activa !== false
+  }));
+}
+
 function combinarDatos(base, nuevos = {}) {
   return {
     ...clonarDatos(base),
     ...nuevos,
 
-    faq: Array.isArray(nuevos.faq) ? nuevos.faq : clonarDatos(base.faq),
+    promociones: Array.isArray(nuevos.promociones)
+      ? normalizarPromociones(nuevos.promociones)
+      : clonarDatos(base.promociones),
+
+    faq: Array.isArray(nuevos.faq)
+      ? nuevos.faq
+      : clonarDatos(base.faq),
 
     horarios: {
       ...clonarDatos(base.horarios),
@@ -410,6 +446,10 @@ function getPromo() {
   return getSiteData().promo || "";
 }
 
+function getPromociones() {
+  return getSiteData().promociones || [];
+}
+
 function getFAQ() {
   return getSiteData().faq || [];
 }
@@ -441,6 +481,12 @@ async function guardarContacto(contacto) {
 async function guardarPromo(promo) {
   const data = getSiteData();
   data.promo = promo;
+  await saveSiteData(data);
+}
+
+async function guardarPromociones(promociones) {
+  const data = getSiteData();
+  data.promociones = promociones;
   await saveSiteData(data);
 }
 
@@ -539,6 +585,7 @@ window.ElCirculoData = {
   getEventos,
   getContacto,
   getPromo,
+  getPromociones,
   getFAQ,
 
   guardarServicios,
@@ -546,6 +593,7 @@ window.ElCirculoData = {
   guardarEventos,
   guardarContacto,
   guardarPromo,
+  guardarPromociones,
   guardarFAQ,
 
   restaurarDatosIniciales,

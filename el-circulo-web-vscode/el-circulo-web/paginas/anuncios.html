@@ -71,7 +71,7 @@
 
         <div class="anuncios-layout">
 
-          <article class="anuncio-card anuncio-promociones">
+          <article class="anuncio-card anuncio-promociones anuncio-click" onclick="abrirPromociones()">
             <span class="anuncio-tag">Promociones</span>
             <h2>Promociones próximamente</h2>
             <p>
@@ -81,7 +81,7 @@
             <small>11 de junio de 2026</small>
           </article>
 
-          <article class="anuncio-card anuncio-horarios">
+          <article class="anuncio-card anuncio-horarios anuncio-click" onclick="irAHorarios()">
             <span class="anuncio-tag">Horarios</span>
             <h2>Actualización de horarios</h2>
             <p>
@@ -91,7 +91,7 @@
             <small>11 de junio de 2026</small>
           </article>
 
-          <article class="anuncio-card anuncio-eventos">
+          <article class="anuncio-card anuncio-eventos anuncio-click" onclick="irAHorarios()">
             <span class="anuncio-tag">Eventos</span>
             <h2>Nuevos eventos disponibles</h2>
             <p>
@@ -105,6 +105,34 @@
 
       </div>
     </section>
+
+    <div class="promo-modal" id="promoModal">
+      <div class="promo-modal-content">
+        <button class="promo-close" onclick="cerrarPromociones()" aria-label="Cerrar promociones">
+          ×
+        </button>
+
+        <p class="eyebrow">Promociones activas</p>
+        <h2>Promociones disponibles</h2>
+
+        <div class="promo-list" id="promoList">
+          <div class="promo-item">
+            <h3>Combo Gamer PS4</h3>
+            <p>2 horas de juego en PS4 con precio especial para grupos.</p>
+          </div>
+
+          <div class="promo-item">
+            <h3>Noche Gamer PS5</h3>
+            <p>Promoción especial para sesiones nocturnas en PlayStation 5.</p>
+          </div>
+
+          <div class="promo-item">
+            <h3>Switch con amigos</h3>
+            <p>Descuento especial para partidas grupales en Nintendo Switch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -129,11 +157,16 @@
     </div>
   </footer>
 
-  <script src="../script/anuncios.js"></script>
+<script type="module" src="../script/firebase-config.js"></script>
+<script src="../script/site-data.js"></script>
+<script src="../script/auth.js"></script>
+<script src="../script/anuncios.js"></script>
 
   <script>
     const menuToggle = document.getElementById("menuToggle");
     const menuPanel = document.getElementById("menuPanel");
+    const scanTransition = document.getElementById("scanTransition");
+    const promoModal = document.getElementById("promoModal");
 
     if (menuToggle && menuPanel) {
       menuToggle.addEventListener("click", function (e) {
@@ -155,11 +188,44 @@
         if (e.key === "Escape") {
           menuToggle.classList.remove("open");
           menuPanel.classList.remove("show");
+          cerrarPromociones();
         }
       });
     }
 
-    const scanTransition = document.getElementById("scanTransition");
+    function irAHorarios() {
+      if (scanTransition) {
+        scanTransition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = "horarios.html";
+        }, 520);
+      } else {
+        window.location.href = "horarios.html";
+      }
+    }
+
+    function abrirPromociones() {
+      if (promoModal) {
+        promoModal.classList.add("show");
+        document.body.classList.add("modal-open");
+      }
+    }
+
+    function cerrarPromociones() {
+      if (promoModal) {
+        promoModal.classList.remove("show");
+        document.body.classList.remove("modal-open");
+      }
+    }
+
+    if (promoModal) {
+      promoModal.addEventListener("click", function (e) {
+        if (e.target === promoModal) {
+          cerrarPromociones();
+        }
+      });
+    }
 
     document.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", function (e) {
@@ -177,11 +243,15 @@
 
         e.preventDefault();
 
-        scanTransition.classList.add("active");
+        if (scanTransition) {
+          scanTransition.classList.add("active");
 
-        setTimeout(() => {
+          setTimeout(() => {
+            window.location.href = href;
+          }, 520);
+        } else {
           window.location.href = href;
-        }, 520);
+        }
       });
     });
   </script>

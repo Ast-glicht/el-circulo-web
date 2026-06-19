@@ -48,7 +48,7 @@ function configurarSeccionesPanel() {
 
   if (seccionActiva === "eventos") renderizarEventos();
   if (seccionActiva === "horarios") cargarHorarios();
-  if (seccionActiva === "promos") cargarPromo();
+if (seccionActiva === "promos") renderizarPromocionesAdmin();
   if (seccionActiva === "servicios") cargarSelectServicios();
   if (seccionActiva === "contacto") cargarContacto();
 }
@@ -75,7 +75,7 @@ function configurarSeccionesPanel() {
 
       if (seccionActiva === "eventos") renderizarEventos();
       if (seccionActiva === "horarios") cargarHorarios();
-      if (seccionActiva === "promos") cargarPromo();
+     if (seccionActiva === "promos") renderizarPromocionesAdmin();
       if (seccionActiva === "servicios") cargarSelectServicios();
       if (seccionActiva === "contacto") cargarContacto();
       if (seccionActiva === "faq") renderizarFAQ();
@@ -467,27 +467,137 @@ function cargarHorarios() {
   });
 }
 
-/* PROMOS */
+/* PROMOCIONES */
+
+function obtenerPromociones() {
+  return window.ElCirculoData.getPromociones();
+}
+
+async function guardarPromocionesDatos(promociones) {
+  await window.ElCirculoData.guardarPromociones(promociones);
+}
 
 function configurarPromos() {
   const formPromo = document.getElementById("formPromo");
+  const btnLimpiar = document.getElementById("limpiarPromo");
+
   if (!formPromo) return;
 
   formPromo.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    const promo = document.getElementById("promoTexto").value.trim();
-    await window.ElCirculoData.guardarPromo(promo);
-
-    alert("Promoción guardada correctamente.");
+    await guardarPromocion();
   });
+
+  if (btnLimpiar) {
+    btnLimpiar.addEventListener("click", limpiarFormularioPromo);
+  }
 }
 
-function cargarPromo() {
-  const promo = window.ElCirculoData.getPromo();
-  const inputPromo = document.getElementById("promoTexto");
+async function guardarPromocion() {
+  const id = document.getElementById("promoId").value;
+  const titulo = document.getElementById("promoTitulo").value.trim();
+  const descripcion = document.getElementById("promoDescripcion").value.trim();
+  const activa = document.getElementById("promoActiva").value === "true";
 
-  if (inputPromo) inputPromo.value = promo || "";
+  if (!titulo || !descripcion) {
+    alert("Completa el título y la descripción de la promoción.");
+    return;
+  }
+
+  const promociones = obtenerPromociones();
+
+  if (id) {
+    const actualizadas = promociones.map((promo) => {
+      if (Number(promo.id) === Number(id)) {
+        return { ...promo, titulo, descripcion, activa };
+      }
+
+      return promo;
+    });
+
+    await guardarPromocionesDatos(actualizadas);
+  } else {
+    promociones.push({
+      id: Date.now(),
+      titulo,
+      descripcion,
+      activa
+    });
+
+    await guardarPromocionesDatos(promociones);
+  }
+
+  limpiarFormularioPromo();
+  renderizarPromocionesAdmin();
+
+  alert("Promoción guardada correctamente.");
+}
+
+function renderizarPromocionesAdmin() {
+  const lista = document.getElementById("listaPromociones");
+  if (!lista) return;
+
+  const promociones = obtenerPromociones();
+
+  if (!promociones.length) {
+    lista.innerHTML = `
+      <div class="admin-empty-state">
+        <h3>No hay promociones registradas</h3>
+        <p>Agrega la primera promoción desde el formulario.</p>
+      </div>
+    `;
+    return;
+  }
+
+  lista.innerHTML = promociones
+    .map((promo) => `
+      <article class="admin-event-item">
+        <div>
+          <span class="admin-event-status">${promo.activa ? "Activa" : "Inactiva"}</span>
+          <h3>${promo.titulo}</h3>
+          <p>${promo.descripcion}</p>
+        </div>
+
+        <div class="admin-event-actions">
+          <button onclick="editarPromocion(${promo.id})">Editar</button>
+          <button class="danger" onclick="eliminarPromocion(${promo.id})">Eliminar</button>
+        </div>
+      </article>
+    `)
+    .join("");
+}
+
+function editarPromocion(id) {
+  const promo = obtenerPromociones().find((item) => Number(item.id) === Number(id));
+  if (!promo) return;
+
+  document.getElementById("promoId").value = promo.id;
+  document.getElementById("promoTitulo").value = promo.titulo;
+  document.getElementById("promoDescripcion").value = promo.descripcion;
+  document.getElementById("promoActiva").value = String(promo.activa !== false);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function eliminarPromocion(id) {
+  const confirmar = confirm("¿Seguro que deseas eliminar esta promoción?");
+  if (!confirmar) return;
+
+  const promociones = obtenerPromociones().filter((promo) => Number(promo.id) !== Number(id));
+
+  await guardarPromocionesDatos(promociones);
+  renderizarPromocionesAdmin();
+}
+
+function limpiarFormularioPromo() {
+  const formPromo = document.getElementById("formPromo");
+  if (formPromo) formPromo.reset();
+
+  const promoId = document.getElementById("promoId");
+  if (promoId) promoId.value = "";
+
+  const promoActiva = document.getElementById("promoActiva");
+  if (promoActiva) promoActiva.value = "true";
 }
 
 /* SERVICIOS */

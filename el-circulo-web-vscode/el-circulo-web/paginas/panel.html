@@ -202,25 +202,43 @@
         </div>
 
         <!-- SECCIÓN PROMOS -->
-        <div class="admin-section" id="section-promos">
-          <div class="admin-section-header">
-            <div>
-              <h2>Promoción destacada</h2>
-              <p>Define un mensaje promocional para usar en la página.</p>
-            </div>
-          </div>
+      <div class="admin-section" id="section-promos">
+  <div class="admin-section-header">
+    <div>
+      <h2>Gestión de promociones</h2>
+      <p>Agrega, edita o elimina promociones visibles en Anuncios.</p>
+    </div>
+  </div>
 
-          <form class="admin-form" id="formPromo">
-            <div class="form-group">
-              <label for="promoTexto">Mensaje promocional</label>
-              <textarea id="promoTexto" placeholder="Ejemplo: Viernes de torneo con descuento en horas de juego."></textarea>
-            </div>
+  <form class="admin-form" id="formPromo">
+    <input type="hidden" id="promoId">
 
-            <div class="admin-form-actions">
-              <button type="submit" class="admin-main-btn">Guardar promoción</button>
-            </div>
-          </form>
-        </div>
+    <div class="form-group">
+      <label for="promoTitulo">Título de la promoción</label>
+      <input type="text" id="promoTitulo" placeholder="Ej: Combo Gamer PS4">
+    </div>
+
+    <div class="form-group">
+      <label for="promoDescripcion">Descripción</label>
+      <textarea id="promoDescripcion" placeholder="Describe la promoción..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="promoActiva">Estado</label>
+      <select id="promoActiva">
+        <option value="true">Activa</option>
+        <option value="false">Inactiva</option>
+      </select>
+    </div>
+
+    <div class="admin-form-actions">
+      <button type="submit" class="admin-main-btn">Guardar promoción</button>
+      <button type="button" class="admin-secondary-btn" id="limpiarPromo">Limpiar</button>
+    </div>
+  </form>
+
+  <div class="admin-list" id="listaPromociones"></div>
+</div>
 
         <!-- SECCIÓN SERVICIOS -->
         <div class="admin-section" id="section-servicios">

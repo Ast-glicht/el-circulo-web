@@ -1,71 +1,55 @@
-const anuncios = [
-  {
-    titulo: "Nuevos eventos disponibles",
-    fecha: "2026-06-12",
-    categoria: "Eventos",
-    descripcion:
-      "Muy pronto tendremos nuevos torneos, noches gamer y dinámicas especiales para nuestra comunidad.",
-    destacado: true
-  },
-  {
-    titulo: "Promociones próximamente",
-    fecha: "2026-06-12",
-    categoria: "Promociones",
-    descripcion:
-      "Estamos preparando promociones especiales para horas de juego en PS4, PS5 y Nintendo Switch.",
-    destacado: false
-  },
-  {
-    titulo: "Actualización de horarios",
-    fecha: "2026-06-12",
-    categoria: "Horarios",
-    descripcion:
-      "Los horarios de atención y eventos serán publicados en la sección de horarios para que podás revisarlos fácilmente.",
-    destacado: false
+document.addEventListener("DOMContentLoaded", async () => {
+  if (window.ElCirculoDataReady) {
+    await window.ElCirculoDataReady;
   }
-];
 
-const anunciosGrid = document.getElementById("anunciosGrid");
+  renderizarPromociones();
+});
 
-function cargarAnuncios() {
-  if (!anunciosGrid) return;
+function renderizarPromociones() {
+  const promoList = document.getElementById("promoList");
+  if (!promoList || !window.ElCirculoData) return;
 
-  anunciosGrid.innerHTML = "";
+  const promociones = window.ElCirculoData
+    .getPromociones()
+    .filter((promo) => promo.activa !== false);
 
-  if (anuncios.length === 0) {
-    anunciosGrid.innerHTML = `
-      <article class="anuncio-card anuncio-empty">
-        <span class="anuncio-tag">Próximamente</span>
-        <h3>No hay anuncios disponibles</h3>
-        <p>Volvé pronto para ver nuevas noticias de El Círculo Gaming House.</p>
-      </article>
+  if (!promociones.length) {
+    promoList.innerHTML = `
+      <div class="promo-item">
+        <h3>No hay promociones activas</h3>
+        <p>Pronto tendremos nuevas promociones disponibles.</p>
+      </div>
     `;
     return;
   }
 
-  anuncios.forEach(anuncio => {
-    const card = document.createElement("article");
-    card.className = anuncio.destacado
-      ? "anuncio-card anuncio-destacado"
-      : "anuncio-card";
-
-    card.innerHTML = `
-      <span class="anuncio-tag">${anuncio.categoria}</span>
-      <h3>${anuncio.titulo}</h3>
-      <p>${anuncio.descripcion}</p>
-      <small>${formatearFecha(anuncio.fecha)}</small>
-    `;
-
-    anunciosGrid.appendChild(card);
-  });
+  promoList.innerHTML = promociones
+    .map((promo) => `
+      <div class="promo-item">
+        <h3>${promo.titulo}</h3>
+        <p>${promo.descripcion}</p>
+      </div>
+    `)
+    .join("");
 }
 
-function formatearFecha(fecha) {
-  return new Date(fecha).toLocaleDateString("es-NI", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  });
+function abrirPromociones() {
+  const promoModal = document.getElementById("promoModal");
+  if (promoModal) {
+    renderizarPromociones();
+    promoModal.classList.add("show");
+    document.body.classList.add("modal-open");
+  }
 }
 
-cargarAnuncios();
+function cerrarPromociones() {
+  const promoModal = document.getElementById("promoModal");
+  if (promoModal) {
+    promoModal.classList.remove("show");
+    document.body.classList.remove("modal-open");
+  }
+}
+
+window.abrirPromociones = abrirPromociones;
+window.cerrarPromociones = cerrarPromociones;
