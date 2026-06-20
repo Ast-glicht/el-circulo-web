@@ -7472,3 +7472,50 @@ body.modal-open {
   object-fit: cover;
   display: block;
 }
+
+.modal-event-main-img {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  display: block;
+  border-radius: 18px;
+  margin-top: 15px;
+}
+
+.event-result-box {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(0, 255, 170, 0.35);
+  border-radius: 18px;
+  background: rgba(0, 255, 170, 0.06);
+  box-shadow: inset 0 0 20px rgba(0, 255, 170, 0.05);
+}
+
+.event-result-box h4 {
+  margin-bottom: 10px;
+  color: #00ff9d;
+  font-family: "Orbitron", sans-serif;
+}
+
+.event-result-image-frame {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 18px;
+  overflow: visible;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.event-result-img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  display: block !important;
+  border-radius: 18px;
+}
+
+.event-result-description {
+  margin-top: 12px;
+  line-height: 1.6;
+}

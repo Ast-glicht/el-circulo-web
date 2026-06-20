@@ -3,6 +3,11 @@ const EL_CIRCULO_DATA_KEY = "elcirculo-site-data-v1";
 const defaultSiteData = {
   promo: "",
 
+  admin: {
+    usuario: "ADMIN",
+    password: "123456789"
+  },
+
   promociones: [
     {
       id: 1,
@@ -67,7 +72,9 @@ const defaultSiteData = {
       descripcion: "Competencia amistosa para jugadores de PS4 y PS5.",
       imagen: "",
       banner: "",
-      video: ""
+      video: "",
+      resultadoImagen: "",
+      resultadoDescripcion: ""
     },
     {
       id: 2,
@@ -78,7 +85,9 @@ const defaultSiteData = {
       descripcion: "Sesión multijugador con juegos familiares y competitivos.",
       imagen: "",
       banner: "",
-      video: ""
+      video: "",
+      resultadoImagen: "",
+      resultadoDescripcion: ""
     },
     {
       id: 3,
@@ -89,7 +98,9 @@ const defaultSiteData = {
       descripcion: "Dinámicas rápidas, premios simbólicos y partidas especiales.",
       imagen: "",
       banner: "",
-      video: ""
+      video: "",
+      resultadoImagen: "",
+      resultadoDescripcion: ""
     }
   ],
 
@@ -299,7 +310,9 @@ function normalizarEventos(eventos = []) {
     descripcion: evento.descripcion || "",
     imagen: evento.imagen || "",
     banner: evento.banner || "",
-    video: evento.video || ""
+    video: evento.video || "",
+    resultadoImagen: evento.resultadoImagen || "",
+    resultadoDescripcion: evento.resultadoDescripcion || ""
   }));
 }
 
@@ -312,17 +325,30 @@ function normalizarPromociones(promociones = []) {
   }));
 }
 
+function normalizarFAQ(faq = []) {
+  return faq.map((item) => ({
+    id: item.id || Date.now(),
+    pregunta: item.pregunta || "",
+    respuesta: item.respuesta || ""
+  }));
+}
+
 function combinarDatos(base, nuevos = {}) {
   return {
     ...clonarDatos(base),
     ...nuevos,
+
+    admin: {
+      ...clonarDatos(base.admin),
+      ...(nuevos.admin || {})
+    },
 
     promociones: Array.isArray(nuevos.promociones)
       ? normalizarPromociones(nuevos.promociones)
       : clonarDatos(base.promociones),
 
     faq: Array.isArray(nuevos.faq)
-      ? nuevos.faq
+      ? normalizarFAQ(nuevos.faq)
       : clonarDatos(base.faq),
 
     horarios: {
@@ -357,10 +383,22 @@ function getSiteData() {
 
   try {
     const parsed = JSON.parse(saved);
-    return combinarDatos(defaultSiteData, parsed);
+    const datosCombinados = combinarDatos(defaultSiteData, parsed);
+
+    localStorage.setItem(
+      EL_CIRCULO_DATA_KEY,
+      JSON.stringify(datosCombinados)
+    );
+
+    return datosCombinados;
   } catch (error) {
     console.error("Error leyendo localStorage:", error);
-    localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
+
+    localStorage.setItem(
+      EL_CIRCULO_DATA_KEY,
+      JSON.stringify(defaultSiteData)
+    );
+
     return clonarDatos(defaultSiteData);
   }
 }
@@ -368,7 +406,10 @@ function getSiteData() {
 async function saveSiteData(data) {
   const datosCompletos = combinarDatos(defaultSiteData, data);
 
-  localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(datosCompletos));
+  localStorage.setItem(
+    EL_CIRCULO_DATA_KEY,
+    JSON.stringify(datosCompletos)
+  );
 
   if (window.FirebaseDB) {
     const ref = window.FirebaseDB.doc(
@@ -422,6 +463,8 @@ async function cargarDatosDesdeFirebase() {
   }
 }
 
+/* GETTERS */
+
 function getServicios() {
   return getSiteData().servicios;
 }
@@ -453,6 +496,15 @@ function getPromociones() {
 function getFAQ() {
   return getSiteData().faq || [];
 }
+
+function getAdminCredenciales() {
+  return getSiteData().admin || {
+    usuario: "ADMIN",
+    password: "123456789"
+  };
+}
+
+/* GUARDAR */
 
 async function guardarServicios(servicios) {
   const data = getSiteData();
@@ -496,8 +548,22 @@ async function guardarFAQ(faq) {
   await saveSiteData(data);
 }
 
+async function guardarAdminCredenciales(admin) {
+  const data = getSiteData();
+
+  data.admin = {
+    usuario: admin.usuario || "ADMIN",
+    password: admin.password || "123456789"
+  };
+
+  await saveSiteData(data);
+}
+
 async function restaurarDatosIniciales() {
-  localStorage.setItem(EL_CIRCULO_DATA_KEY, JSON.stringify(defaultSiteData));
+  localStorage.setItem(
+    EL_CIRCULO_DATA_KEY,
+    JSON.stringify(defaultSiteData)
+  );
 
   if (window.FirebaseDB) {
     const ref = window.FirebaseDB.doc(
@@ -510,9 +576,19 @@ async function restaurarDatosIniciales() {
   }
 }
 
+/* HORARIOS / AGENDA */
+
 function obtenerDiaSemana(fechaISO) {
   const fecha = new Date(`${fechaISO}T00:00:00`);
-  const dias = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+  const dias = [
+    "domingo",
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes",
+    "sabado"
+  ];
 
   return dias[fecha.getDay()];
 }
@@ -553,6 +629,8 @@ function estaDentroDelHorario(fechaISO, hora) {
   };
 }
 
+/* ARCHIVOS */
+
 function convertirArchivoABase64(file) {
   return new Promise((resolve, reject) => {
     if (!file) {
@@ -574,6 +652,8 @@ function convertirArchivoABase64(file) {
   });
 }
 
+/* EXPORTAR API GLOBAL */
+
 window.ElCirculoData = {
   getSiteData,
   saveSiteData,
@@ -587,6 +667,7 @@ window.ElCirculoData = {
   getPromo,
   getPromociones,
   getFAQ,
+  getAdminCredenciales,
 
   guardarServicios,
   guardarHorarios,
@@ -595,6 +676,7 @@ window.ElCirculoData = {
   guardarPromo,
   guardarPromociones,
   guardarFAQ,
+  guardarAdminCredenciales,
 
   restaurarDatosIniciales,
   estaDentroDelHorario,
@@ -604,12 +686,20 @@ window.ElCirculoData = {
 window.ElCirculoDataReady = new Promise((resolve) => {
   if (window.FirebaseDB) {
     cargarDatosDesdeFirebase().then(resolve);
-  } else {
-    resolve(getSiteData());
+    return;
+  }
 
-    window.addEventListener("firebase-ready", async () => {
+  const timeout = setTimeout(() => {
+    resolve(getSiteData());
+  }, 900);
+
+  window.addEventListener(
+    "firebase-ready",
+    async () => {
+      clearTimeout(timeout);
       const datos = await cargarDatosDesdeFirebase();
       resolve(datos);
-    });
-  }
+    },
+    { once: true }
+  );
 });

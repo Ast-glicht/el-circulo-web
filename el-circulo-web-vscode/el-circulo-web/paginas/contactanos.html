@@ -71,65 +71,11 @@
       <div class="suggestion-card info-card" id="infoPanel">
         <h2 id="infoTitle">Información de contacto</h2>
 
-        <div class="contact-cards combined-contact-cards">
-          <article class="contact-card">
-            <h3>Facebook</h3>
-            <p>
-              <a href="https://www.facebook.com/p/El-Circulo-Gaming-House-100063761764940/" target="_blank">
-                El Círculo Gaming House
-              </a>
-            </p>
-          </article>
+        <div class="contact-cards combined-contact-cards" id="combinedContactCards"></div>
 
-          <article class="contact-card">
-            <h3>Instagram</h3>
-            <p>
-              <a href="https://www.instagram.com/elcirculogaminghouse/" target="_blank">
-                @elcirculogaminghouse
-              </a>
-            </p>
-          </article>
+        <div class="map-card neon-card" id="mapPanel"></div>
 
-          <article class="contact-card">
-            <h3>Teléfono</h3>
-            <p><a href="tel:+50589428230">8942 8230</a></p>
-          </article>
-
-          <article class="contact-card">
-            <h3>Dirección</h3>
-            <p>Edificios de la UNI, Av. Universitaria Casimiro Sotelo, Managua 11125</p>
-          </article>
-        </div>
-
-        <div class="map-card neon-card" id="mapPanel">
-          <h3>Ubicación</h3>
-          <iframe
-            src="https://www.google.com/maps?q=Edificios%20de%20la%20UNI,%20Av.%20Universitaria%20Casimiro%20Sotelo,%20Managua%2011125&z=16&output=embed"
-            width="100%"
-            height="260"
-            style="border:0;"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
-        </div>
-
-        <div class="suggestion-mini-list hidden" id="suggestionIdeas">
-          <div>
-            <span>01</span>
-            <p>Nuevos juegos para PS4, PS5 o Nintendo Switch.</p>
-          </div>
-
-          <div>
-            <span>02</span>
-            <p>Ideas para torneos, promociones o eventos especiales.</p>
-          </div>
-
-          <div>
-            <span>03</span>
-            <p>Mejoras en horarios, atención, comodidad o servicios.</p>
-          </div>
-        </div>
+        <div class="suggestion-mini-list hidden" id="suggestionIdeas"></div>
       </div>
 
       <form class="suggestion-card suggestion-form" id="communicationForm">
@@ -154,14 +100,7 @@
 
         <div class="form-group hidden" id="categoryGroup">
           <label for="category">Categoría</label>
-          <select name="category" id="category">
-            <option value="">Selecciona una opción</option>
-            <option value="Juegos">Juegos</option>
-            <option value="Eventos">Eventos</option>
-            <option value="Servicios">Servicios</option>
-            <option value="Atención">Atención</option>
-            <option value="Otro">Otro</option>
-          </select>
+          <select name="category" id="category"></select>
         </div>
 
         <div class="form-group">
@@ -200,6 +139,7 @@
     </div>
   </footer>
 
+  <script type="module" src="../script/firebase-config.js"></script>
   <script src="../script/site-data.js"></script>
   <script src="../script/auth.js"></script>
   <script src="../script/contactanos.js"></script>
@@ -252,7 +192,9 @@
 
         e.preventDefault();
 
-        scanTransition.classList.add("active");
+        if (scanTransition) {
+          scanTransition.classList.add("active");
+        }
 
         setTimeout(() => {
           window.location.href = href;
@@ -262,3 +204,4 @@
   </script>
 </body>
 </html>
+

@@ -44,16 +44,16 @@
         <span class="admin-panel-chip">CONTROL INTERNO</span>
         <h1>Centro de Control</h1>
         <p>
-          Desde este panel puedes modificar eventos, horarios, servicios, contacto
-          y contenido visible en el sistema frontend.
+          Desde este panel puedes modificar eventos, horarios, promociones,
+          servicios, contacto, FAQ y seguridad del webmaster.
         </p>
       </div>
 
       <div class="admin-dashboard-grid">
-         <article class="admin-dashboard-card" data-admin-section="eventos">
+        <article class="admin-dashboard-card" data-admin-section="eventos">
           <span>01</span>
           <h3>Eventos</h3>
-          <p>Crear, editar y eliminar eventos especiales.</p>
+          <p>Crear, editar, eliminar y agregar resultados.</p>
         </article>
 
         <article class="admin-dashboard-card" data-admin-section="horarios">
@@ -65,14 +65,9 @@
         <article class="admin-dashboard-card" data-admin-section="promos">
           <span>03</span>
           <h3>Promociones</h3>
-          <p>Activar anuncios o promociones temporales.</p>
+          <p>Agregar, editar o eliminar promociones.</p>
         </article>
- 
-        <article class="admin-dashboard-card" data-admin-section="faq">
-          <span>07</span>
-          <h3>FAQ</h3>
-          <p>Agregar, editar o eliminar preguntas frecuentes.</p>
-        </article>
+
         <article class="admin-dashboard-card" data-admin-section="servicios">
           <span>04</span>
           <h3>Servicios</h3>
@@ -90,16 +85,28 @@
           <h3>Respaldo</h3>
           <p>Exportar, restaurar o limpiar datos locales.</p>
         </article>
+
+        <article class="admin-dashboard-card" data-admin-section="faq">
+          <span>07</span>
+          <h3>FAQ</h3>
+          <p>Agregar, editar o eliminar preguntas frecuentes.</p>
+        </article>
+
+        <article class="admin-dashboard-card" data-admin-section="seguridad">
+          <span>08</span>
+          <h3>Seguridad</h3>
+          <p>Cambiar usuario y contraseña del webmaster.</p>
+        </article>
       </div>
 
       <section class="admin-workspace">
 
-        <!-- SECCIÓN EVENTOS -->
+        <!-- EVENTOS -->
         <div class="admin-section" id="section-eventos">
           <div class="admin-section-header">
             <div>
               <h2>Gestión de eventos</h2>
-              <p>Agrega torneos, noches gamer o actividades especiales.</p>
+              <p>Agrega eventos, banners, imágenes y resultados finales.</p>
             </div>
           </div>
 
@@ -140,15 +147,11 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Imagen del evento</label>
-
                 <div class="admin-file-upload">
                   <input type="file" id="eventoImagen" accept="image/*">
-                  <label for="eventoImagen" class="admin-file-label">
-                    Seleccionar imagen
-                  </label>
+                  <label for="eventoImagen" class="admin-file-label">Seleccionar imagen</label>
                   <span id="eventoImagenNombre">Sin imagen seleccionada</span>
                 </div>
-
                 <div class="admin-image-preview" id="eventoImagenPreviewBox">
                   <img id="eventoImagenPreview" alt="Previsualización del evento">
                 </div>
@@ -156,19 +159,12 @@
 
               <div class="form-group">
                 <label>Banner del evento</label>
-
                 <div class="admin-file-upload">
                   <input type="file" id="eventoBannerFile" accept="image/*">
-                  <label for="eventoBannerFile" class="admin-file-label">
-                    Seleccionar banner
-                  </label>
+                  <label for="eventoBannerFile" class="admin-file-label">Seleccionar banner</label>
                   <span id="eventoBannerNombre">Sin banner seleccionado</span>
                 </div>
-
-                <small class="admin-help-text">
-                  Usa un banner horizontal recomendado de 1371x784 px.
-                </small>
-
+                <small class="admin-help-text">Banner recomendado: 1371x784 px.</small>
                 <div class="admin-image-preview" id="eventoBannerPreviewBox">
                   <img id="eventoBannerPreview" alt="Previsualización del banner">
                 </div>
@@ -180,6 +176,26 @@
               <input type="url" id="eventoVideo" placeholder="https://youtube.com/...">
             </div>
 
+            <div class="form-group">
+              <label for="eventoResultadoDescripcion">Resultado del evento</label>
+              <textarea id="eventoResultadoDescripcion" placeholder="Ej: ganador, marcador, resumen final..."></textarea>
+              <small class="admin-help-text">
+                Solo se mostrará públicamente si el evento está en estado Finalizado.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Imagen del resultado</label>
+              <div class="admin-file-upload">
+                <input type="file" id="eventoResultadoImagen" accept="image/*">
+                <label for="eventoResultadoImagen" class="admin-file-label">Seleccionar imagen de resultado</label>
+                <span id="eventoResultadoImagenNombre">Sin imagen seleccionada</span>
+              </div>
+              <div class="admin-image-preview" id="eventoResultadoImagenPreviewBox">
+                <img id="eventoResultadoImagenPreview" alt="Previsualización del resultado">
+              </div>
+            </div>
+
             <div class="admin-form-actions">
               <button type="submit" class="admin-main-btn">Guardar evento</button>
               <button type="button" class="admin-secondary-btn" id="limpiarEvento">Limpiar</button>
@@ -189,7 +205,7 @@
           <div class="admin-list" id="listaEventos"></div>
         </div>
 
-        <!-- SECCIÓN HORARIOS -->
+        <!-- HORARIOS -->
         <div class="admin-section" id="section-horarios">
           <div class="admin-section-header">
             <div>
@@ -197,50 +213,49 @@
               <p>Modifica la información de atención del local.</p>
             </div>
           </div>
-
           <form class="admin-form" id="formHorario"></form>
         </div>
 
-        <!-- SECCIÓN PROMOS -->
-      <div class="admin-section" id="section-promos">
-  <div class="admin-section-header">
-    <div>
-      <h2>Gestión de promociones</h2>
-      <p>Agrega, edita o elimina promociones visibles en Anuncios.</p>
-    </div>
-  </div>
+        <!-- PROMOCIONES -->
+        <div class="admin-section" id="section-promos">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de promociones</h2>
+              <p>Agrega, edita o elimina promociones visibles en Anuncios.</p>
+            </div>
+          </div>
 
-  <form class="admin-form" id="formPromo">
-    <input type="hidden" id="promoId">
+          <form class="admin-form" id="formPromo">
+            <input type="hidden" id="promoId">
 
-    <div class="form-group">
-      <label for="promoTitulo">Título de la promoción</label>
-      <input type="text" id="promoTitulo" placeholder="Ej: Combo Gamer PS4">
-    </div>
+            <div class="form-group">
+              <label for="promoTitulo">Título de la promoción</label>
+              <input type="text" id="promoTitulo" placeholder="Ej: Combo Gamer PS4">
+            </div>
 
-    <div class="form-group">
-      <label for="promoDescripcion">Descripción</label>
-      <textarea id="promoDescripcion" placeholder="Describe la promoción..."></textarea>
-    </div>
+            <div class="form-group">
+              <label for="promoDescripcion">Descripción</label>
+              <textarea id="promoDescripcion" placeholder="Describe la promoción..."></textarea>
+            </div>
 
-    <div class="form-group">
-      <label for="promoActiva">Estado</label>
-      <select id="promoActiva">
-        <option value="true">Activa</option>
-        <option value="false">Inactiva</option>
-      </select>
-    </div>
+            <div class="form-group">
+              <label for="promoActiva">Estado</label>
+              <select id="promoActiva">
+                <option value="true">Activa</option>
+                <option value="false">Inactiva</option>
+              </select>
+            </div>
 
-    <div class="admin-form-actions">
-      <button type="submit" class="admin-main-btn">Guardar promoción</button>
-      <button type="button" class="admin-secondary-btn" id="limpiarPromo">Limpiar</button>
-    </div>
-  </form>
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar promoción</button>
+              <button type="button" class="admin-secondary-btn" id="limpiarPromo">Limpiar</button>
+            </div>
+          </form>
 
-  <div class="admin-list" id="listaPromociones"></div>
-</div>
+          <div class="admin-list" id="listaPromociones"></div>
+        </div>
 
-        <!-- SECCIÓN SERVICIOS -->
+        <!-- SERVICIOS -->
         <div class="admin-section" id="section-servicios">
           <div class="admin-section-header">
             <div>
@@ -315,65 +330,183 @@
           </form>
         </div>
 
-        <!-- SECCIÓN CONTACTO -->
-        <div class="admin-section" id="section-contacto">
-          <div class="admin-section-header">
-            <div>
-              <h2>Gestión de contacto</h2>
-              <p>Edita redes, teléfono, dirección y mapa.</p>
-            </div>
-          </div>
+      <!-- CONTACTO Y SUGERENCIAS -->
+<div class="admin-section" id="section-contacto">
+  <div class="admin-section-header">
+    <div>
+      <h2>Gestión de contacto y sugerencias</h2>
+      <p>Edita redes, teléfono, correo, ubicación, textos del formulario y contenido de sugerencias.</p>
+    </div>
+  </div>
 
-          <form class="admin-form" id="formContacto">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="facebookTexto">Texto Facebook</label>
-                <input type="text" id="facebookTexto">
-              </div>
+  <form class="admin-form" id="formContacto">
 
-              <div class="form-group">
-                <label for="facebookUrl">URL Facebook</label>
-                <input type="url" id="facebookUrl">
-              </div>
+    <h3 class="admin-form-subtitle">Información general de contacto</h3>
 
-              <div class="form-group">
-                <label for="instagramTexto">Texto Instagram</label>
-                <input type="text" id="instagramTexto">
-              </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="facebookTexto">Texto Facebook</label>
+        <input type="text" id="facebookTexto" placeholder="El Círculo Gaming House">
+      </div>
 
-              <div class="form-group">
-                <label for="instagramUrl">URL Instagram</label>
-                <input type="url" id="instagramUrl">
-              </div>
+      <div class="form-group">
+        <label for="facebookUrl">URL Facebook</label>
+        <input type="url" id="facebookUrl" placeholder="https://facebook.com/...">
+      </div>
 
-              <div class="form-group">
-                <label for="telefonoTexto">Teléfono visible</label>
-                <input type="text" id="telefonoTexto">
-              </div>
+      <div class="form-group">
+        <label for="instagramTexto">Texto Instagram</label>
+        <input type="text" id="instagramTexto" placeholder="@elcirculogaminghouse">
+      </div>
 
-              <div class="form-group">
-                <label for="telefonoUrl">Teléfono para enlace</label>
-                <input type="text" id="telefonoUrl" placeholder="+50589428230">
-              </div>
-            </div>
+      <div class="form-group">
+        <label for="instagramUrl">URL Instagram</label>
+        <input type="url" id="instagramUrl" placeholder="https://instagram.com/...">
+      </div>
 
-            <div class="form-group">
-              <label for="direccionContacto">Dirección</label>
-              <textarea id="direccionContacto"></textarea>
-            </div>
+      <div class="form-group">
+        <label for="tiktokTexto">Texto TikTok</label>
+        <input type="text" id="tiktokTexto" placeholder="@elcirculogaminghouse">
+      </div>
 
-            <div class="form-group">
-              <label for="mapaUrl">URL embed de Google Maps</label>
-              <textarea id="mapaUrl"></textarea>
-            </div>
+      <div class="form-group">
+        <label for="tiktokUrl">URL TikTok</label>
+        <input type="url" id="tiktokUrl" placeholder="https://www.tiktok.com/@...">
+      </div>
 
-            <div class="admin-form-actions">
-              <button type="submit" class="admin-main-btn">Guardar contacto</button>
-            </div>
-          </form>
-        </div>
+      <div class="form-group">
+        <label for="telefonoTexto">Teléfono visible</label>
+        <input type="text" id="telefonoTexto" placeholder="8942 8230">
+      </div>
 
-        <!-- SECCIÓN RESPALDO -->
+      <div class="form-group">
+        <label for="telefonoUrl">Teléfono para enlace</label>
+        <input type="text" id="telefonoUrl" placeholder="+50589428230">
+      </div>
+
+      <div class="form-group">
+        <label for="correoNegocio">Correo del negocio</label>
+        <input type="email" id="correoNegocio" placeholder="correo@ejemplo.com">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="direccionContacto">Dirección</label>
+      <textarea id="direccionContacto" placeholder="Dirección del local"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="mapaUrl">URL embed de Google Maps</label>
+      <textarea id="mapaUrl" placeholder="URL del mapa embebido"></textarea>
+    </div>
+
+    <h3 class="admin-form-subtitle">Textos de la pestaña Contacto</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="contactoPageTitle">Título principal</label>
+        <input type="text" id="contactoPageTitle" placeholder="Contacto">
+      </div>
+
+      <div class="form-group">
+        <label for="contactoInfoTitle">Título del panel informativo</label>
+        <input type="text" id="contactoInfoTitle" placeholder="Información de contacto">
+      </div>
+
+      <div class="form-group">
+        <label for="contactoFormTitle">Título del formulario</label>
+        <input type="text" id="contactoFormTitle" placeholder="Enviar mensaje">
+      </div>
+
+      <div class="form-group">
+        <label for="contactoSubmitText">Texto del botón</label>
+        <input type="text" id="contactoSubmitText" placeholder="Enviar mensaje">
+      </div>
+
+      <div class="form-group">
+        <label for="contactoMessageLabel">Etiqueta del mensaje</label>
+        <input type="text" id="contactoMessageLabel" placeholder="Mensaje">
+      </div>
+
+      <div class="form-group">
+        <label for="contactoMessagePlaceholder">Placeholder del mensaje</label>
+        <input type="text" id="contactoMessagePlaceholder" placeholder="Escribe tu mensaje">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="contactoPageDescription">Descripción principal de contacto</label>
+      <textarea id="contactoPageDescription" placeholder="Texto descriptivo de contacto"></textarea>
+    </div>
+
+    <h3 class="admin-form-subtitle">Textos de la pestaña Sugerencia</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="sugerenciaPageTitle">Título principal</label>
+        <input type="text" id="sugerenciaPageTitle" placeholder="Sugerencias">
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaInfoTitle">Título del panel informativo</label>
+        <input type="text" id="sugerenciaInfoTitle" placeholder="¿Qué puedes sugerir?">
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaFormTitle">Título del formulario</label>
+        <input type="text" id="sugerenciaFormTitle" placeholder="Enviar sugerencia">
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaSubmitText">Texto del botón</label>
+        <input type="text" id="sugerenciaSubmitText" placeholder="Enviar sugerencia">
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaMessageLabel">Etiqueta del mensaje</label>
+        <input type="text" id="sugerenciaMessageLabel" placeholder="Sugerencia">
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaMessagePlaceholder">Placeholder del mensaje</label>
+        <input type="text" id="sugerenciaMessagePlaceholder" placeholder="Escribe tu sugerencia...">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="sugerenciaPageDescription">Descripción principal de sugerencias</label>
+      <textarea id="sugerenciaPageDescription" placeholder="Texto descriptivo de sugerencias"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="categoriasSugerencia">Categorías de sugerencia, una por línea</label>
+      <textarea id="categoriasSugerencia" placeholder="Juegos&#10;Eventos&#10;Servicios&#10;Atención&#10;Otro"></textarea>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="sugerenciaIdea1">Idea sugerida 1</label>
+        <textarea id="sugerenciaIdea1" placeholder="Nuevos juegos para PS4, PS5 o Nintendo Switch."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaIdea2">Idea sugerida 2</label>
+        <textarea id="sugerenciaIdea2" placeholder="Ideas para torneos, promociones o eventos especiales."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="sugerenciaIdea3">Idea sugerida 3</label>
+        <textarea id="sugerenciaIdea3" placeholder="Mejoras en horarios, atención, comodidad o servicios."></textarea>
+      </div>
+    </div>
+
+    <div class="admin-form-actions">
+      <button type="submit" class="admin-main-btn">Guardar contacto y sugerencias</button>
+    </div>
+  </form>
+</div>
+
+        <!-- RESPALDO -->
         <div class="admin-section" id="section-respaldo">
           <div class="admin-section-header">
             <div>
@@ -387,35 +520,64 @@
             <button class="admin-danger-btn" id="restaurarDatos">Restaurar datos</button>
           </div>
         </div>
-<div class="admin-section" id="section-faq">
-  <div class="admin-section-header">
-    <div>
-      <h2>Gestión de FAQ</h2>
-      <p>Administra las preguntas frecuentes visibles en la página FAQ.</p>
-    </div>
-  </div>
 
-  <form class="admin-form" id="formFAQ">
-    <input type="hidden" id="faqId">
+        <!-- FAQ -->
+        <div class="admin-section" id="section-faq">
+          <div class="admin-section-header">
+            <div>
+              <h2>Gestión de FAQ</h2>
+              <p>Administra las preguntas frecuentes visibles en la página FAQ.</p>
+            </div>
+          </div>
 
-    <div class="form-group">
-      <label for="faqPregunta">Pregunta</label>
-      <input type="text" id="faqPregunta" placeholder="Ej: ¿Necesito reservar para jugar?">
-    </div>
+          <form class="admin-form" id="formFAQ">
+            <input type="hidden" id="faqId">
 
-    <div class="form-group">
-      <label for="faqRespuesta">Respuesta</label>
-      <textarea id="faqRespuesta" placeholder="Escribe la respuesta..."></textarea>
-    </div>
+            <div class="form-group">
+              <label for="faqPregunta">Pregunta</label>
+              <input type="text" id="faqPregunta" placeholder="Ej: ¿Necesito reservar para jugar?">
+            </div>
 
-    <div class="admin-form-actions">
-      <button type="submit" class="admin-main-btn">Guardar pregunta</button>
-      <button type="button" class="admin-secondary-btn" id="limpiarFAQ">Limpiar</button>
-    </div>
-  </form>
+            <div class="form-group">
+              <label for="faqRespuesta">Respuesta</label>
+              <textarea id="faqRespuesta" placeholder="Escribe la respuesta..."></textarea>
+            </div>
 
-  <div class="admin-list" id="listaFAQ"></div>
-</div>
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar pregunta</button>
+              <button type="button" class="admin-secondary-btn" id="limpiarFAQ">Limpiar</button>
+            </div>
+          </form>
+
+          <div class="admin-list" id="listaFAQ"></div>
+        </div>
+
+        <!-- SEGURIDAD -->
+        <div class="admin-section" id="section-seguridad">
+          <div class="admin-section-header">
+            <div>
+              <h2>Seguridad del panel</h2>
+              <p>Cambia el usuario y contraseña para entrar al modo webmaster.</p>
+            </div>
+          </div>
+
+          <form class="admin-form" id="formSeguridad">
+            <div class="form-group">
+              <label for="adminUsuarioNuevo">Nuevo usuario</label>
+              <input type="text" id="adminUsuarioNuevo" placeholder="Ej: WEBMASTER">
+            </div>
+
+            <div class="form-group">
+              <label for="adminPasswordNuevo">Nueva contraseña</label>
+              <input type="password" id="adminPasswordNuevo" placeholder="Nueva contraseña">
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="admin-main-btn">Guardar credenciales</button>
+            </div>
+          </form>
+        </div>
+
       </section>
     </section>
   </main>

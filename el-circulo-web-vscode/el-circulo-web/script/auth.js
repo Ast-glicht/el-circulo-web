@@ -1,7 +1,8 @@
-const ADMIN_PASSWORD = "123456789";
-const ADMIN_ROLE = "ADMIN";
-verificarExpiracionAdmin();
-const konamiCode = [
+const ADMIN_ROLE_DEFAULT = "ADMIN";
+const ADMIN_PASSWORD_DEFAULT = "123456789";
+const ADMIN_SESSION_DURATION = 1000 * 60 * 60 * 8;
+
+const KONAMI_CODE = [
   "ArrowUp",
   "ArrowUp",
   "ArrowDown",
@@ -11,65 +12,50 @@ const konamiCode = [
   "ArrowLeft",
   "ArrowRight",
   "b",
-  "a"
+  "a",
 ];
 
-let konamiPosition = 0;
+let konamiIndex = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
   crearModalAdmin();
-  activarOpcionesAdmin();
-  prepararEventosLogin();
+  configurarKonamiAdmin();
   activarAccesoMovilAdmin();
+  validarSesionAdmin();
 });
 
-document.addEventListener("keydown", (event) => {
-  const tecla = event.key;
+/* RUTAS */
 
-  if (tecla === konamiCode[konamiPosition]) {
-    konamiPosition++;
+function obtenerRutaPanel() {
+  const path = window.location.pathname;
 
-    if (konamiPosition === konamiCode.length) {
-      mostrarLoginAdmin();
-      konamiPosition = 0;
-    }
-  } else {
-    konamiPosition = 0;
+  if (path.includes("/pages/") || path.includes("/paginas/")) {
+    return "panel.html";
   }
-});
-function activarAccesoMovilAdmin() {
-  const brand = document.querySelector(".brand");
-  const logo = document.querySelector(".brand-logo");
-  const elemento = logo || brand;
 
-  if (!elemento) return;
-
-  const estaEnInicio = window.location.pathname.includes("inicio.html");
-
-  let taps = 0;
-  let timer = null;
-
-  elemento.addEventListener("click", (event) => {
-    if (!estaEnInicio) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    taps++;
-
-    clearTimeout(timer);
-
-    timer = setTimeout(() => {
-      taps = 0;
-    }, 1200);
-
-    if (taps >= 3) {
-      clearTimeout(timer);
-      taps = 0;
-      mostrarLoginAdmin();
-    }
-  });
+  return "pages/panel.html";
 }
+
+/* SESIÓN */
+
+function validarSesionAdmin() {
+  const rolActivo = localStorage.getItem("rolActivo");
+  const loginTime = Number(localStorage.getItem("adminLoginTime") || 0);
+
+  if (rolActivo !== "ADMIN") return;
+
+  const ahora = Date.now();
+
+  if (!loginTime || ahora - loginTime > ADMIN_SESSION_DURATION) {
+    localStorage.removeItem("rolActivo");
+    localStorage.removeItem("adminLoginTime");
+    return;
+  }
+
+  activarOpcionesAdmin();
+}
+
+/* MODAL ADMIN CON ESTILO ORIGINAL */
 
 function crearModalAdmin() {
   if (document.getElementById("adminLoginModal")) return;
@@ -119,69 +105,194 @@ function crearModalAdmin() {
   `;
 
   document.body.appendChild(modal);
-}
 
-function prepararEventosLogin() {
-  const btnLogin = document.getElementById("btnLoginAdmin");
   const btnCerrar = document.getElementById("cerrarLoginAdmin");
+  const btnLogin = document.getElementById("btnLoginAdmin");
+  const inputRol = document.getElementById("adminRol");
+  const inputPassword = document.getElementById("adminPassword");
+
+  if (btnCerrar) {
+    btnCerrar.addEventListener("click", cerrarLoginAdmin);
+  }
 
   if (btnLogin) {
     btnLogin.addEventListener("click", loginAdmin);
   }
 
-  if (btnCerrar) {
-    btnCerrar.addEventListener("click", cerrarLoginAdmin);
-  }
+  [inputRol, inputPassword].forEach((input) => {
+    if (!input) return;
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        loginAdmin();
+      }
+    });
+  });
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      cerrarLoginAdmin();
+    }
+  });
 }
 
 function mostrarLoginAdmin() {
   const modal = document.getElementById("adminLoginModal");
+  const mensaje = document.getElementById("adminLoginMensaje");
+  const inputRol = document.getElementById("adminRol");
+  const inputPassword = document.getElementById("adminPassword");
 
-  if (modal) {
-    modal.classList.add("active");
+  if (!modal) return;
 
-    const inputRol = document.getElementById("adminRol");
-    if (inputRol) inputRol.focus();
+  modal.classList.add("show");
+  modal.classList.add("active");
+  document.body.classList.add("modal-open");
+
+  if (mensaje) {
+    mensaje.textContent = "";
+    mensaje.className = "";
   }
+
+  if (inputRol) inputRol.value = "";
+  if (inputPassword) inputPassword.value = "";
+
+  setTimeout(() => {
+    if (inputRol) inputRol.focus();
+  }, 150);
 }
 
 function cerrarLoginAdmin() {
   const modal = document.getElementById("adminLoginModal");
 
-  if (modal) {
-    modal.classList.remove("active");
-  }
+  if (!modal) return;
+
+  modal.classList.remove("show");
+  modal.classList.remove("active");
+  document.body.classList.remove("modal-open");
 }
 
-function loginAdmin() {
-  const rol = document.getElementById("adminRol").value.trim().toUpperCase();
-  const password = document.getElementById("adminPassword").value.trim();
+/* CREDENCIALES */
+
+async function obtenerCredencialesAdmin() {
+  let credenciales = {
+    usuario: ADMIN_ROLE_DEFAULT,
+    password: ADMIN_PASSWORD_DEFAULT,
+  };
+
+  try {
+    if (window.ElCirculoDataReady) {
+      await window.ElCirculoDataReady;
+    }
+
+    if (window.ElCirculoData && window.ElCirculoData.getAdminCredenciales) {
+      const guardadas = window.ElCirculoData.getAdminCredenciales();
+
+      credenciales = {
+        usuario: guardadas.usuario || ADMIN_ROLE_DEFAULT,
+        password: guardadas.password || ADMIN_PASSWORD_DEFAULT,
+      };
+    }
+  } catch (error) {
+    console.warn("No se pudieron cargar credenciales personalizadas:", error);
+  }
+
+  return credenciales;
+}
+
+async function loginAdmin() {
+  const rolInput = document.getElementById("adminRol");
+  const passwordInput = document.getElementById("adminPassword");
   const mensaje = document.getElementById("adminLoginMensaje");
 
-  if (rol === ADMIN_ROLE && password === ADMIN_PASSWORD) {
-localStorage.setItem("rolActivo", "ADMIN");
-localStorage.setItem("adminLoginTime", Date.now());
+  if (!rolInput || !passwordInput || !mensaje) return;
+
+  const rol = rolInput.value.trim().toUpperCase();
+  const password = passwordInput.value.trim();
+
+  const credenciales = await obtenerCredencialesAdmin();
+
+  const usuarioCorrecto = String(
+    credenciales.usuario || ADMIN_ROLE_DEFAULT
+  ).toUpperCase();
+
+  const passwordCorrecto = String(
+    credenciales.password || ADMIN_PASSWORD_DEFAULT
+  );
+
+  if (rol === usuarioCorrecto && password === passwordCorrecto) {
+    localStorage.setItem("rolActivo", "ADMIN");
+    localStorage.setItem("adminLoginTime", Date.now());
+
     mensaje.textContent = "Acceso concedido. Bienvenido.";
     mensaje.className = "success";
 
     setTimeout(() => {
       window.location.href = obtenerRutaPanel();
-    }, 900);
+    }, 700);
   } else {
     mensaje.textContent = "Acceso denegado. Credenciales incorrectas.";
     mensaje.className = "error";
   }
 }
 
-function obtenerRutaPanel() {
-  const estaEnPaginas = window.location.pathname.includes("/paginas/");
+/* KONAMI DESKTOP */
 
-  if (estaEnPaginas) {
-    return "panel.html";
-  }
+function configurarKonamiAdmin() {
+  document.addEventListener("keydown", (event) => {
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    const expectedKey = KONAMI_CODE[konamiIndex];
 
-  return "paginas/panel.html";
+    if (key === expectedKey) {
+      konamiIndex++;
+
+      if (konamiIndex === KONAMI_CODE.length) {
+        konamiIndex = 0;
+        mostrarLoginAdmin();
+      }
+    } else {
+      konamiIndex = 0;
+    }
+  });
 }
+
+/* ACCESO MÓVIL: 3 TOQUES EN LOGO */
+
+function activarAccesoMovilAdmin() {
+  const brand = document.querySelector(".brand");
+  const logo = document.querySelector(".brand-logo");
+  const elemento = logo || brand;
+
+  if (!elemento) return;
+
+  const estaEnInicio = window.location.pathname.includes("inicio.html");
+
+  let taps = 0;
+  let timer = null;
+
+  elemento.addEventListener("click", (event) => {
+    if (!estaEnInicio) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    taps++;
+
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      taps = 0;
+    }, 1200);
+
+    if (taps >= 3) {
+      clearTimeout(timer);
+      taps = 0;
+      mostrarLoginAdmin();
+    }
+  });
+}
+
+/* OPCIONES ADMIN EN MENÚ */
+
 function activarOpcionesAdmin() {
   const rolActivo = localStorage.getItem("rolActivo");
 
@@ -219,11 +330,10 @@ function activarOpcionesAdmin() {
   }
 }
 
-function verificarExpiracionAdmin() {
-  const loginTime = Number(localStorage.getItem("adminLoginTime"));
+/* EXPONER FUNCIONES */
 
-  if (loginTime && Date.now() - loginTime > 4 * 60 * 60 * 1000) {
-    localStorage.removeItem("rolActivo");
-    localStorage.removeItem("adminLoginTime");
-  }
-}
+window.crearModalAdmin = crearModalAdmin;
+window.mostrarLoginAdmin = mostrarLoginAdmin;
+window.cerrarLoginAdmin = cerrarLoginAdmin;
+window.loginAdmin = loginAdmin;
+window.obtenerRutaPanel = obtenerRutaPanel;
